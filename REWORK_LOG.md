@@ -254,3 +254,31 @@ after a student complains.
   time on one machine, they can disturb each other. In CI every job has its
   own machine, so it is fine.
 
+---
+
+## Stage 9 — Final: the "save point"
+
+**What was done**
+- Final check: all 159 tests green on Python 3.13 and 3.9; all 15 lessons
+  pass the self-test; `./academy`, `list`, `start`, `--help`, `--version`
+  work; README commands checked against the real app.
+- `HANDOFF.md` — current state, how to run, architecture, what was not done
+  on purpose, known problems, and "How to continue" (first 5 steps).
+- `ROADMAP.md` — ideas by priority (1 = do first … 4 = big ideas).
+- `CHANGELOG.md` — version 1.0.0.
+- `AUDIT.md` and `LESSONS_PLAN.md` got a short note at the top: they are
+  historical / planning documents; the code is the source of truth.
+
+**Decisions**
+- **Version 1.0.0** (as you asked), although old tags go up to `v2.1.1`.
+  The new CLI is a new product, so starting again at 1.0.0 is honest.
+- ⚠️ **A tag `v1.0.0` already exists** on GitHub (on an old desktop commit).
+  I did **not** create, move or delete any tag — changing tags is your
+  decision. `HANDOFF.md` §6 shows two options: move the tag, or use
+  `v3.0.0` instead.
+
+**Open questions for you**
+1. Move the old `v1.0.0` tag, or release as `v3.0.0`?
+2. Which landing page: v1 (retro), v2 (modern) or v3 (game)?
+3. Please check/rotate access to the server whose IP was in the old
+   desktop code (it stays in git history).

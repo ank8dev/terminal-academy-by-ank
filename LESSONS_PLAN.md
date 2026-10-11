@@ -14,6 +14,12 @@ the terminal.
 
 ---
 
+
+> **Note:** this is the plan the lessons were built from. The real lesson
+> files in `terminal_academy/lessons/` are the source of truth; a few steps
+> changed during implementation (for example `pkill` is blocked by the app,
+> so lessons use `kill <PID>`). See `REWORK_LOG.md`, stage 8.
+
 ## 1. Goals and principles
 
 **Goals**

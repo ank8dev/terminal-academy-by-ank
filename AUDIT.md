@@ -1,5 +1,9 @@
 # Terminal Academy — Repository Audit
 
+> **Historical document.** This is a snapshot of the project *before* the
+> rework (desktop app + old curses CLI). Most files it mentions were deleted
+> in stages 5–6. See `REWORK_LOG.md` and `HANDOFF.md` for the current state.
+
 Branch: `rework` (commit `edcc295`). Audit date: 2026-10-11.
 Scope: the committed tree (`git ls-files`). Line numbers refer to this commit.
 
