@@ -42,19 +42,18 @@ jobs:
           python --version
           bash --version | head -n 1
 
-      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 takes
-      # ~35 s (measured: socket.getfqdn("127.0.0.1")). python3 -m http.server
-      # calls getfqdn() after bind() but before listen(), so lessons 12 and 15
-      # see a hanging curl. Send in-addr.arpa lookups to a local address that
-      # refuses at once, so the answer comes from /etc/hosts.
-      - name: Fast reverse DNS for localhost (macOS runners)
+      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 times
+      # out after 35 s (measured: socket.getfqdn("127.0.0.1")). The stdlib
+      # `python3 -m http.server` calls getfqdn() after bind() but before
+      # listen(), so in lessons 12 and 15 curl hangs. This is a runner
+      # problem, not an app problem, so CI (only) loads a tiny
+      # sitecustomize.py that makes getfqdn() return at once.
+      - name: Work around slow reverse DNS (macOS runners)
         if: runner.os == 'macOS'
         run: |
-          sudo mkdir -p /etc/resolver
-          echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/in-addr.arpa
-          sudo dscacheutil -flushcache || true
-          sudo killall -HUP mDNSResponder || true
-          python3 -c "import socket,time; t=time.time(); n=socket.getfqdn('127.0.0.1'); print('getfqdn(127.0.0.1) =', n, 'in %.1fs' % (time.time()-t))"
+          mkdir -p "$RUNNER_TEMP/pyshim"
+          printf '%s\n' 'import socket' 'socket.getfqdn = lambda name="": name or "localhost"' > "$RUNNER_TEMP/pyshim/sitecustomize.py"
+          echo "PYTHONPATH=$RUNNER_TEMP/pyshim" >> "$GITHUB_ENV"
 
       - name: Lint (byte-compile everything)
         run: python -m compileall -q terminal_academy tests
@@ -107,19 +106,18 @@ jobs:
           /usr/bin/python3 --version
           /bin/bash --version | head -n 1
 
-      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 takes
-      # ~35 s (measured: socket.getfqdn("127.0.0.1")). python3 -m http.server
-      # calls getfqdn() after bind() but before listen(), so lessons 12 and 15
-      # see a hanging curl. Send in-addr.arpa lookups to a local address that
-      # refuses at once, so the answer comes from /etc/hosts.
-      - name: Fast reverse DNS for localhost (macOS runners)
+      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 times
+      # out after 35 s (measured: socket.getfqdn("127.0.0.1")). The stdlib
+      # `python3 -m http.server` calls getfqdn() after bind() but before
+      # listen(), so in lessons 12 and 15 curl hangs. This is a runner
+      # problem, not an app problem, so CI (only) loads a tiny
+      # sitecustomize.py that makes getfqdn() return at once.
+      - name: Work around slow reverse DNS (macOS runners)
         if: runner.os == 'macOS'
         run: |
-          sudo mkdir -p /etc/resolver
-          echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/in-addr.arpa
-          sudo dscacheutil -flushcache || true
-          sudo killall -HUP mDNSResponder || true
-          python3 -c "import socket,time; t=time.time(); n=socket.getfqdn('127.0.0.1'); print('getfqdn(127.0.0.1) =', n, 'in %.1fs' % (time.time()-t))"
+          mkdir -p "$RUNNER_TEMP/pyshim"
+          printf '%s\n' 'import socket' 'socket.getfqdn = lambda name="": name or "localhost"' > "$RUNNER_TEMP/pyshim/sitecustomize.py"
+          echo "PYTHONPATH=$RUNNER_TEMP/pyshim" >> "$GITHUB_ENV"
 
       - name: Unit tests
         run: /usr/bin/python3 -m unittest discover -s tests -v
