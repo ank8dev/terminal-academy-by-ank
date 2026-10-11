@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terminal Academy — learn the command line, for real</title>
+  <meta name="description" content="Terminal Academy (t//a) is a free, open-source command-line app that teaches teens and beginners the terminal with hands-on lessons in a safe sandbox.">
+  <meta name="theme-color" content="#0a0f0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="logo" href="#top" aria-label="Terminal Academy home">t//a</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#learn">learn</a></li>
+        <li><a href="#how">how</a></li>
+        <li><a href="#who">who</a></li>
+        <li><a href="#source">source</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <pre class="ascii" aria-hidden="true">
+ _____                   _             _
+|_   _|__ _ __ _ __ ___ (_)_ __   __ _| |
+  | |/ _ \ '__| '_ ` _ \| | '_ \ / _` | |
+  | |  __/ |  | | | | | | | | | | (_| | |
+  |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|_|
+    _                 _
+   / \   ___ __ _  __| | ___ _ __ ___  _   _
+  / _ \ / __/ _` |/ _` |/ _ \ '_ ` _ \| | | |
+ / ___ \ (_| (_| | (_| |  __/ | | | | | |_| |
+/_/   \_\___\__,_|\__,_|\___|_| |_| |_|\__, |
+                                       |___/</pre>
+      <h1 id="hero-title" class="hero-title"><span class="prompt">&gt;</span> Learn the terminal by actually using it.</h1>
+      <p class="pitch">A free, open-source app that teaches teens and beginners the command line — right inside your own terminal.</p>
+
+      <div class="hero-grid">
+        <div class="install">
+          <p class="label">// install &amp; run (macOS, Linux &middot; Python 3.9+)</p>
+          <pre class="code"><code><span class="ps">$</span> git clone https://github.com/ank8dev/terminal-academy-by-ank.git
+<span class="ps">$</span> cd terminal-academy-by-ank
+<span class="ps">$</span> ./academy</code></pre>
+          <div class="cta">
+            <a class="btn" href="https://github.com/ank8dev/terminal-academy-by-ank">[ View on GitHub ]</a>
+            <a class="btn btn-ghost" href="#learn">[ See the lessons ]</a>
+          </div>
+        </div>
+
+        <figure class="screen" aria-label="Example lesson session">
+          <div class="screen-bar" aria-hidden="true"><span></span><span></span><span></span><em>academy — lesson 2</em></div>
+          <div class="screen-body" aria-hidden="true">
+            <p class="l l1"><span class="am">t//a</span> Lesson 2: Files and folders</p>
+            <p class="l l2">Task: create a folder called <span class="hl">notes</span></p>
+            <p class="l l3"><span class="ps">sandbox $</span> <span class="typed t1">mkdir notes</span></p>
+            <p class="l l4"><span class="ok">&#10003; Nice! The folder exists.</span></p>
+            <p class="l l5">Task: list what is inside the sandbox</p>
+            <p class="l l6"><span class="ps">sandbox $</span> <span class="typed t2">ls</span></p>
+            <p class="l l7">notes</p>
+            <p class="l l8"><span class="ok">&#10003; Correct. Progress saved.</span></p>
+            <p class="l l9"><span class="ps">sandbox $</span> <span class="cursor">&#9608;</span></p>
+          </div>
+          <figcaption class="sr-only">A lesson asks you to create a folder named notes; you type mkdir notes, the app confirms it, then you list the folder with ls and your progress is saved.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="learn" aria-labelledby="learn-title">
+      <h2 id="learn-title"><span class="hash">##</span> What you'll learn</h2>
+      <p class="sub">Seven levels, from your very first command to logging into a server.</p>
+      <ol class="levels">
+        <li><span class="lvl">01</span><div><h3>First steps</h3><p>Open a terminal, run commands, find out where you are.</p></div></li>
+        <li><span class="lvl">02</span><div><h3>Files &amp; folders</h3><p>Move around, create, copy, rename and delete.</p></div></li>
+        <li><span class="lvl">03</span><div><h3>Reading &amp; searching text</h3><p>Look inside files and find exactly what you need.</p></div></li>
+        <li><span class="lvl">04</span><div><h3>Permissions</h3><p>Who can read, write and run a file — and why.</p></div></li>
+        <li><span class="lvl">05</span><div><h3>Processes</h3><p>See what is running on your machine and control it.</p></div></li>
+        <li><span class="lvl">06</span><div><h3>Networking</h3><p>The basics of how your computer talks to others.</p></div></li>
+        <li><span class="lvl">07</span><div><h3>Servers &amp; SSH</h3><p>Connect to remote machines like a pro.</p></div></li>
+      </ol>
+      <div class="meter" aria-hidden="true">difficulty [<span>&#9617;&#9617;&#9618;&#9618;&#9619;&#9619;&#9608;</span>] easy &rarr; harder</div>
+    </section>
+
+    <section id="how" aria-labelledby="how-title">
+      <h2 id="how-title"><span class="hash">##</span> How it works</h2>
+      <ol class="steps">
+        <li>
+          <p class="step-n">step_1</p>
+          <h3>Run one command</h3>
+          <p>Clone the repo and start <code>./academy</code>. Works on macOS and Linux with Python 3.9+. No other dependencies.</p>
+        </li>
+        <li>
+          <p class="step-n">step_2</p>
+          <h3>Type real commands</h3>
+          <p>Each lesson gives you a task. You do it in a safe practice folder (a sandbox), so nothing else on your computer gets touched.</p>
+        </li>
+        <li>
+          <p class="step-n">step_3</p>
+          <h3>Get checked &amp; hints</h3>
+          <p>The app checks your result and gives hints when you're stuck. Progress is saved locally — pick up any time.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="who" aria-labelledby="who-title">
+      <h2 id="who-title"><span class="hash">##</span> Who it's for</h2>
+      <div class="who">
+        <article>
+          <h3>&gt; teens</h3>
+          <p>Roughly 13–18 and curious how computers really work? Learn the tool that developers, hackers and sysadmins use every day.</p>
+        </article>
+        <article>
+          <h3>&gt; parents &amp; teachers</h3>
+          <p>Free, open source, no account and no tracking. Lessons run in a sandbox, and progress stays on the learner's own computer.</p>
+        </article>
+        <article>
+          <h3>&gt; beginners</h3>
+          <p>Never opened a terminal? Start at level one. Clear tasks, instant feedback, and hints along the way.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="source" class="source" aria-labelledby="source-title">
+      <h2 id="source-title"><span class="hash">##</span> Open source</h2>
+      <pre class="license" aria-hidden="true">+--------------------------------+
+|  LICENSE: MIT   PRICE: $0      |
+|  ACCOUNT: none  TRACKING: none |
++--------------------------------+</pre>
+      <p>Terminal Academy is MIT-licensed and built in the open. Found a bug, have an idea for a lesson, or want to improve a hint? Issues and pull requests are welcome.</p>
+      <a class="btn" href="https://github.com/ank8dev/terminal-academy-by-ank">[ Contribute on GitHub ]</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><span class="logo">t//a</span> Terminal Academy &middot; MIT License &middot; <a href="https://github.com/ank8dev/terminal-academy-by-ank">GitHub</a> &middot; <a href="#top">back to top &uarr;</a></p>
+    <p class="dim">$ exit</p>
+  </footer>
+</body>
+</html>

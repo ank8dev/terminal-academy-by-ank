@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terminal Academy — the friendly way to learn the command line</title>
+  <meta name="description" content="Terminal Academy is a free, open-source app that teaches teens and beginners the terminal with hands-on lessons, instant feedback and hints. macOS and Linux, Python 3.9+.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top"><span class="logo-mark" aria-hidden="true">t//a</span><span class="brand-name">Terminal Academy</span></a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="#learn">Lessons</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#who">Who it's for</a></li>
+          <li><a class="nav-gh" href="https://github.com/ank8dev/terminal-academy-by-ank">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <p class="pill"><span class="dot" aria-hidden="true"></span> Free &amp; open source &middot; MIT</p>
+          <h1 id="hero-title">Get comfy with the <span class="grad">terminal</span>.</h1>
+          <p class="lead">Hands-on lessons that run in your own terminal and teach you the command line one real command at a time.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/ank8dev/terminal-academy-by-ank">
+              <svg aria-hidden="true" viewBox="0 0 16 16" width="18" height="18"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              Get it on GitHub
+            </a>
+            <a class="btn btn-soft" href="#learn">See the lessons</a>
+          </div>
+          <ul class="facts">
+            <li>macOS &amp; Linux</li>
+            <li>Python 3.9+</li>
+            <li>No account</li>
+            <li>No tracking</li>
+          </ul>
+        </div>
+
+        <div class="hero-card">
+          <div class="term">
+            <div class="term-top" aria-hidden="true"><i></i><i></i><i></i><span>Install &amp; run</span></div>
+            <pre><code><span class="c">$</span> git clone https://github.com/ank8dev/terminal-academy-by-ank.git
+<span class="c">$</span> cd terminal-academy-by-ank
+<span class="c">$</span> ./academy</code></pre>
+          </div>
+          <p class="hint">That's it. No other dependencies to install.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="learn" class="section" aria-labelledby="learn-title">
+      <div class="wrap">
+        <p class="eyebrow">What you'll learn</p>
+        <h2 id="learn-title">Seven levels, easy to harder</h2>
+        <p class="section-lead">Start with your very first command and finish by connecting to a real server.</p>
+        <ol class="cards">
+          <li class="card c1"><span class="num">1</span><h3>First steps</h3><p>Open the terminal, run your first commands and find your way around.</p></li>
+          <li class="card c2"><span class="num">2</span><h3>Files &amp; folders</h3><p>Create, move, copy, rename and delete — without a mouse.</p></li>
+          <li class="card c3"><span class="num">3</span><h3>Reading &amp; searching text</h3><p>Peek inside files and search for exactly what you need.</p></li>
+          <li class="card c4"><span class="num">4</span><h3>Permissions</h3><p>Understand who is allowed to read, write and run files.</p></li>
+          <li class="card c5"><span class="num">5</span><h3>Processes</h3><p>See what's running on your computer and how to control it.</p></li>
+          <li class="card c6"><span class="num">6</span><h3>Networking</h3><p>Learn the basics of how computers talk to each other.</p></li>
+          <li class="card c7"><span class="num">7</span><h3>Servers &amp; SSH</h3><p>Log in to remote machines securely with SSH.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="how" class="section section-tint" aria-labelledby="how-title">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-title">Three steps. Real commands.</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-badge">1</span>
+            <h3>Start with one command</h3>
+            <p>Clone the project and run <code>./academy</code>. It works on macOS and Linux with Python 3.9 or newer.</p>
+          </li>
+          <li>
+            <span class="step-badge">2</span>
+            <h3>Practice in a sandbox</h3>
+            <p>Each lesson gives you a task. You type real commands in a safe practice folder, so you can experiment freely.</p>
+          </li>
+          <li>
+            <span class="step-badge">3</span>
+            <h3>Get feedback &amp; hints</h3>
+            <p>The app checks your result and nudges you with hints. Your progress is saved locally on your computer.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="who" class="section" aria-labelledby="who-title">
+      <div class="wrap">
+        <p class="eyebrow">Who it's for</p>
+        <h2 id="who-title">Made for curious people</h2>
+        <div class="who">
+          <article class="who-card">
+            <div class="who-icon i1" aria-hidden="true">&gt;_</div>
+            <h3>Teens</h3>
+            <p>Around 13–18 and want to know how computers really work? Learn the tool every developer uses daily.</p>
+          </article>
+          <article class="who-card">
+            <div class="who-icon i2" aria-hidden="true">&#9733;</div>
+            <h3>Parents &amp; teachers</h3>
+            <p>Free, open source, no sign-up and no tracking. Lessons run in a sandbox and progress stays on the device.</p>
+          </article>
+          <article class="who-card">
+            <div class="who-icon i3" aria-hidden="true">&#10022;</div>
+            <h3>Beginners</h3>
+            <p>Never touched a terminal? Perfect. Begin at level one with clear tasks, instant checks and helpful hints.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="source" class="section" aria-labelledby="source-title">
+      <div class="wrap">
+        <div class="oss">
+          <div>
+            <p class="eyebrow">Open source</p>
+            <h2 id="source-title">Built in the open, free forever</h2>
+            <p>Terminal Academy is released under the MIT license. Report a bug, suggest a lesson idea, or improve a hint — every contribution helps.</p>
+          </div>
+          <a class="btn btn-primary" href="https://github.com/ank8dev/terminal-academy-by-ank">Contribute on GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><span class="logo-mark small" aria-hidden="true">t//a</span> Terminal Academy &middot; MIT License</p>
+      <ul>
+        <li><a href="https://github.com/ank8dev/terminal-academy-by-ank">GitHub</a></li>
+        <li><a href="#learn">Lessons</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
