@@ -14,7 +14,6 @@ env/
 tmp/
 **/__pycache__/
 **/.DS_Store
-config.json
 node_modules/
 dist/
 stash/

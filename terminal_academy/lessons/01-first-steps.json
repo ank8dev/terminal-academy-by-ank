@@ -1,0 +1,110 @@
+{
+  "format_version": 1,
+  "id": "01-first-steps",
+  "title": "First Steps",
+  "level": 1,
+  "minutes": 5,
+  "summary": "Meet the terminal: pwd, ls, echo, clear and how to get help.",
+  "intro": "The terminal is a way to talk to your computer with text.\nYou type a command, press Enter, and the computer answers.\nIn this lesson you will ask the computer where you are, what is around you, and make it say something.\nYou are in your own practice folder (your sandbox), so nothing can break.",
+  "outro": "You just spoke your first words in the terminal! pwd, ls, echo, clear and man are commands you will use every single day.",
+  "setup": [
+    {
+      "path": "hello.txt",
+      "content": "Welcome to Terminal Academy!\n"
+    },
+    {
+      "path": "music",
+      "dir": true
+    },
+    {
+      "path": "photos",
+      "dir": true
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Where am I? Type pwd and press Enter to see which folder you are in.",
+      "hints": [
+        "pwd means 'print working directory'.",
+        "Type: pwd"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^pwd\\s*$"
+      },
+      "explain": "The working directory is the folder you are 'standing in' right now. That long path is your sandbox: your own safe practice folder.",
+      "solution": "pwd"
+    },
+    {
+      "instruction": "What is here? List the files and folders in this folder.",
+      "hints": [
+        "The command is two letters, short for 'list'.",
+        "Type: ls"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^ls\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "hello.txt"
+          }
+        ]
+      },
+      "explain": "ls shows the files and folders where you are. You should see hello.txt and the folders music and photos. In many terminals, folders have a different color.",
+      "solution": "ls"
+    },
+    {
+      "instruction": "Make the computer talk: print the text Hello, terminal!",
+      "hints": [
+        "echo repeats what you give it.",
+        "Type: echo \"Hello, terminal!\""
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^echo\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "Hello, terminal!"
+          }
+        ]
+      },
+      "explain": "echo prints text. The quotes keep the words together as one piece of text.",
+      "solution": "echo \"Hello, terminal!\""
+    },
+    {
+      "instruction": "Your screen is getting full. Clear it.",
+      "hints": [
+        "The command is the English word for 'make empty'.",
+        "Type: clear (or press Ctrl+L in a real terminal)"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^clear\\s*$"
+      },
+      "explain": "clear only cleans the screen. Your files are not touched.",
+      "solution": "clear"
+    },
+    {
+      "instruction": "Ask for help: open the manual for ls with man ls (press q to quit it). If man is missing on your computer, try curl --help or python3 --help instead.",
+      "hints": [
+        "man means 'manual'. Inside it, use the arrow keys to scroll and press q to quit.",
+        "Type: man ls"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^(man\\s+\\S+|\\S+\\s+--help)"
+      },
+      "explain": "Almost every command has a manual page. Many commands also understand --help, but not all: on macOS, ls --help does not work, while man ls always does.",
+      "solution": "man ls",
+      "optional": true
+    }
+  ]
+}

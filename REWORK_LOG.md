@@ -126,3 +126,57 @@ result is never used. It is not harmless: people read it, believe it, and
 waste time on it. Git keeps the history, so deleting is safe — you can
 always find old code with `git log`.
 
+### Stage 6 — Move to one CLI, delete the desktop app
+
+**What was done**
+- New package `terminal_academy/` (Python 3.9+, **standard library only**)
+  and a launcher script `./academy` — one command to start on macOS/Linux.
+- Modules, each with one job:
+  - `shell.py` — runs the student's **real** commands with `bash` inside a
+    sandbox folder (`~/.terminal-academy/sandbox/<lesson>`), remembers the
+    current folder and exported variables between commands, stops commands
+    after 30 s, kills forgotten background processes.
+  - `checks.py` — the 9 check types from `LESSONS_PLAN.md`.
+  - `lessons.py` — loads and validates lesson JSON; has a self-test helper
+    that runs every step's `solution` and checks the step really passes.
+  - `engine.py` — the lesson loop (`hint`, `skip`, `reset`, `menu`, `quit`…).
+  - `safety.py` — blocks dangerous commands (`sudo`, `rm -rf /`, fork bomb…).
+  - `progress.py` — saves progress to `progress.json`.
+  - `explain.py` — offline `explain <command>` notes for ~40 commands.
+  - `ui.py`, `cli.py` — colors, splash logo, menu, command-line options.
+- Two lessons to prove the engine works: 01 and 03.
+- Deleted: `terminal-academy-desktop/`, `cli-client/`, `web-landing/`,
+  the desktop release workflow. GitHub Pages now publishes `site/`.
+
+**What was moved from the desktop app (and what was not)**
+- Moved: the dangerous-command list, the "reset sandbox" idea, the
+  "explain this command" idea (now offline, no AI), the skill-tree idea
+  (lessons are grouped by level).
+- Not moved: Gemini AI mentor (privacy + API key + network), SSH to a
+  private server, Docker, fake JWT login, fake monitoring.
+- From the old CLI: the `t//a` logo and mentor "Ank" — but Ank is now kind
+  to teens (no "kid"/"grandma" jokes).
+
+**Decisions and why**
+- **No curses, simple line-by-line UI.** Easier to test, works in any
+  terminal, no resize crashes.
+- **Every command runs in a new `bash` process**, and the app saves
+  `pwd` and `export -p` after it. Simple and robust: a broken command
+  cannot break the app.
+- **`HOME` = sandbox folder**, so `cd ~` and `~/.ssh` stay inside the
+  sandbox and never touch your real files.
+- **The app refuses to run as `root`** (unless `--allow-root`), because a
+  mistake as root can break the whole computer.
+
+**Concept to understand — "process group":** when you start `sleep 300 &`,
+it keeps running after the command line ends. The app starts every command
+in its own *process group* (a family of processes with one id), so it can
+stop the whole family later with one signal.
+
+**Open questions**
+- The blocklist prevents accidents, **not** attacks (variables or `eval`
+  can trick it). For a teen learning tool on their own computer this is
+  acceptable; real isolation (containers) is in the roadmap.
+- Not tested on a real Mac yet — only written to be portable. CI (stage 7)
+  runs on macOS to cover this.
+

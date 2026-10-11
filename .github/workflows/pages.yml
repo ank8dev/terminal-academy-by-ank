@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'web-landing/**'
+      - 'site/**'
   workflow_dispatch:
 
 permissions:
@@ -18,24 +18,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Dependencies
-        run: |
-          cd web-landing
-          npm install
-
-      - name: Build Production Assets
-        run: |
-          cd web-landing
-          npm run build
-
+      # The site is plain HTML and CSS: no build step needed.
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./web-landing/dist
+          publish_dir: ./site
           publish_branch: gh-pages

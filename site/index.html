@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terminal Academy — pick a landing page</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root { --bg: #ffffff; --fg: #1d1f24; --muted: #5b6070; --card: #f4f5f8; --accent: #2f6fde; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #14161b; --fg: #e8eaf0; --muted: #a0a6b5; --card: #1f2229; --accent: #7aa7ff; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg);
+           font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    main { max-width: 44rem; margin: 0 auto; padding: 3rem 1rem; }
+    h1 { margin: 0 0 .5rem; font-size: 1.8rem; }
+    p { color: var(--muted); margin: 0 0 1.5rem; }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+    a { display: block; padding: 1rem 1.25rem; border-radius: .75rem; background: var(--card);
+        color: var(--fg); text-decoration: none; border: 2px solid transparent; }
+    a:hover, a:focus-visible { border-color: var(--accent); outline: none; }
+    strong { color: var(--accent); }
+    code { font-family: ui-monospace, Menlo, monospace; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1><code>t//a</code> Terminal Academy</h1>
+    <p>Three designs for the same landing page. Pick one to look at.</p>
+    <ul>
+      <li><a href="v1/"><strong>v1</strong> · Retro terminal: dark, green, ASCII art</a></li>
+      <li><a href="v2/"><strong>v2</strong> · Clean and modern: light, with dark mode</a></li>
+      <li><a href="v3/"><strong>v3</strong> · Playful: lessons as game levels</a></li>
+    </ul>
+  </main>
+</body>
+</html>

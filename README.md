@@ -1,69 +1,38 @@
-# t//a — Terminal Academy 🚀
+# t//a — Terminal Academy
 
-An international, systems-first educational platform teaching real-world Linux administration, network architecture, and DevOps through an interactive, high-density desktop environment.
+A free, open-source app that teaches teenagers and beginners how to use the
+terminal. You type real commands in a safe practice folder, and the app
+checks your work, gives hints and explains what happened.
 
----
+## Quick start
 
-### **v2.1.1 (Patch Release)**
+You need **macOS or Linux** and **Python 3.9 or newer**. Nothing to install.
 
-`t//a` features an ultra-lightweight cross-platform client compile using **Tauri v2** and Rust, resulting in an exceptionally small installer footprint compared to resource-heavy Electron alternatives:
-* **macOS DMG Installer:** ~6 MB
-* **Windows MSI Setup:** ~3 MB
-* **Linux DEB Package:** ~4 MB
+```sh
+git clone https://github.com/ank8dev/terminal-academy-by-ank.git
+cd terminal-academy-by-ank
+./academy
+```
 
----
+Useful commands:
 
-## 🚀 Key Architectural Pillars
+```sh
+./academy              # main menu
+./academy list         # lessons and your progress
+./academy start 1      # start lesson 1
+./academy reset        # forget your progress
+```
 
-* **Figma-Style Draggable Skill-Tree Canvas:** An interactive, bounded panning roadmap board workspace that lets students navigate nodes smoothly with hardware-accelerated transforms.
-* **Zero-Risk Sandbox Virtualization:** A local container execution loop running on top of Docker. Incidents are completed in safe, isolated workspaces with no threat to the host OS.
-* **AI Mentor Ank:** A witty, sarcastic Socratic guide powered by Gemini API, designed to provide conceptual hints and architecture critiques without giving away direct answers.
+Your progress and practice folders live in `~/.terminal-academy/`.
 
----
+## Repository layout
 
-## 🛠️ Curriculum Syllabus Map (2026 Expansion)
+| Path | What's there |
+| --- | --- |
+| `academy` | Launcher script (checks your Python, then starts the app) |
+| `terminal_academy/` | The app (a Python package, standard library only) |
+| `terminal_academy/lessons/` | Lessons, one JSON file each |
+| `site/` | Static landing pages (deployed to GitHub Pages) |
+| `LESSONS_PLAN.md` | The lesson format and the plan for all lessons |
 
-The skill tree is divided into modules spanning Linux essentials through advanced hosting and bare-metal operations:
-
-### **1. Linux & Systems Basics**
-* CLI navigation, shell configuration, standard stream redirections, and environmental variables.
-* Multi-user setups, group permissions, and strict `sudoers` administration.
-
-### **2. Networking & Docker Orchestration**
-* Port-forwarding configurations, secure local/remote SSH tunnels, and iptables-based firewalls.
-* Docker volume namespaces, custom multi-tier Docker Compose stacks, and internal virtual networks.
-
-### **3. Bare-Metal Survival Skills (Phase 3 Ingestion)**
-* **Automated Log Analysis:** Parse and extract telemetry patterns from high-volume stream logs using `grep`, `awk`, `sed`, and `journalctl`.
-* **Advanced Git Infrastructure:** Setup bare git repositories, manage remote upstreams, resolve merge conflicts via interactive rebase, and write automated server deployment hooks (`post-receive`).
-* **Linux OS Hardening & Auditing:** Tweak kernel configs via `sysctl`, profile system resources, configure file system boundaries, and enforce cgroups compliance.
-
----
-
-## 📂 Repository Layout
-
-* `/terminal-academy-desktop`: Core Tauri application (React + TypeScript frontend, Rust native system state/PTY bridge).
-* `/web-landing`: Clean static promotional site and waitlist registrar.
-
----
-
-## 💻 Quick Start Guide
-
-### Running the Desktop Environment Locally
-1. Navigate to the desktop client workspace:
-   ```bash
-   cd terminal-academy-desktop
-   ```
-2. Install standard dependencies:
-   ```bash
-   npm install
-   ```
-3. Boot the local development environment:
-   ```bash
-   npm run dev
-   ```
-
-### Prerequisites
-* **Node.js** (v18+)
-* **Rust & Cargo compiler toolchain** (to build Tauri native bindings)
-* **Docker Engine** (running locally for sandbox containers)
+Want to help? See [CONTRIBUTING.md](CONTRIBUTING.md). License: [MIT](LICENSE).
