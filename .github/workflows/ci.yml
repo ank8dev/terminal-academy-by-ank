@@ -42,6 +42,20 @@ jobs:
           python --version
           bash --version | head -n 1
 
+      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 takes
+      # ~35 s (measured: socket.getfqdn("127.0.0.1")). python3 -m http.server
+      # calls getfqdn() after bind() but before listen(), so lessons 12 and 15
+      # see a hanging curl. Send in-addr.arpa lookups to a local address that
+      # refuses at once, so the answer comes from /etc/hosts.
+      - name: Fast reverse DNS for localhost (macOS runners)
+        if: runner.os == 'macOS'
+        run: |
+          sudo mkdir -p /etc/resolver
+          echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/in-addr.arpa
+          sudo dscacheutil -flushcache || true
+          sudo killall -HUP mDNSResponder || true
+          python3 -c "import socket,time; t=time.time(); n=socket.getfqdn('127.0.0.1'); print('getfqdn(127.0.0.1) =', n, 'in %.1fs' % (time.time()-t))"
+
       - name: Lint (byte-compile everything)
         run: python -m compileall -q terminal_academy tests
 
@@ -92,6 +106,20 @@ jobs:
         run: |
           /usr/bin/python3 --version
           /bin/bash --version | head -n 1
+
+      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 takes
+      # ~35 s (measured: socket.getfqdn("127.0.0.1")). python3 -m http.server
+      # calls getfqdn() after bind() but before listen(), so lessons 12 and 15
+      # see a hanging curl. Send in-addr.arpa lookups to a local address that
+      # refuses at once, so the answer comes from /etc/hosts.
+      - name: Fast reverse DNS for localhost (macOS runners)
+        if: runner.os == 'macOS'
+        run: |
+          sudo mkdir -p /etc/resolver
+          echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/in-addr.arpa
+          sudo dscacheutil -flushcache || true
+          sudo killall -HUP mDNSResponder || true
+          python3 -c "import socket,time; t=time.time(); n=socket.getfqdn('127.0.0.1'); print('getfqdn(127.0.0.1) =', n, 'in %.1fs' % (time.time()-t))"
 
       - name: Unit tests
         run: /usr/bin/python3 -m unittest discover -s tests -v
