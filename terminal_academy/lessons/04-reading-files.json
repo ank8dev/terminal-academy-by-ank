@@ -1,0 +1,114 @@
+{
+  "format_version": 1,
+  "id": "04-reading-files",
+  "title": "Reading Files",
+  "level": 2,
+  "minutes": 6,
+  "summary": "Read files with cat, head and tail, count lines with wc and scroll with less.",
+  "intro": "Files are full of text: notes, poems, logs, code.\nIn this lesson you will read a whole file, peek at the top and the bottom, count lines, and scroll through a file.\nTwo files are waiting for you: poem.txt and numbers.txt.",
+  "outro": "Now you can read any file! cat for short files, head and tail for a quick peek, wc to count, and less for long ones.",
+  "setup": [
+    {
+      "path": "poem.txt",
+      "content": "The cursor blinks, it waits for me,\nI type a word, and then I see:\nthe computer listens, line by line,\nand every answer comes back fine.\n"
+    },
+    {
+      "path": "numbers.txt",
+      "content": "line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Show the whole poem in poem.txt on the screen.",
+      "hints": [
+        "The command cat prints a file on the screen.",
+        "Type: cat poem.txt"
+      ],
+      "check": {
+        "type": "output_contains",
+        "text": "The cursor blinks"
+      },
+      "explain": "cat prints the whole file at once. It is great for short files. For long files, the text scrolls away too fast to read.",
+      "solution": "cat poem.txt"
+    },
+    {
+      "instruction": "Show only the first 3 lines of numbers.txt.",
+      "hints": [
+        "head shows the head (the top) of a file. The option -n says how many lines.",
+        "Type: head -n 3 numbers.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^head\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "line 3"
+          }
+        ]
+      },
+      "explain": "Without -n, head shows the first 10 lines. head is handy to peek into a big file without printing all of it.",
+      "solution": "head -n 3 numbers.txt"
+    },
+    {
+      "instruction": "Now show only the last 2 lines of numbers.txt.",
+      "hints": [
+        "The opposite of head is tail. It also understands -n.",
+        "Type: tail -n 2 numbers.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^tail\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "line 20"
+          }
+        ]
+      },
+      "explain": "tail shows the end of a file. It is perfect for log files, where the newest lines are at the bottom.",
+      "solution": "tail -n 2 numbers.txt"
+    },
+    {
+      "instruction": "How long is numbers.txt? Count its lines.",
+      "hints": [
+        "wc means 'word count'. The option -l counts lines.",
+        "Type: wc -l numbers.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^wc\\s+-l"
+          },
+          {
+            "type": "output_contains",
+            "text": "20"
+          }
+        ]
+      },
+      "explain": "wc -l counts lines. Plain wc shows three numbers: lines, words and characters. Don't worry if you see extra spaces in front of the number; some computers add them.",
+      "solution": "wc -l numbers.txt"
+    },
+    {
+      "instruction": "Open poem.txt in the viewer less. Scroll with the arrow keys, and press q to quit.",
+      "hints": [
+        "less is a file viewer. Space shows the next page, q quits.",
+        "Type: less poem.txt   (then press q to come back)"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^less\\s+\\S+"
+      },
+      "explain": "less lets you scroll through long files. Inside less, type /word and Enter to search for a word. The man pages use the same viewer, so these keys work there too.",
+      "solution": "less poem.txt"
+    }
+  ]
+}

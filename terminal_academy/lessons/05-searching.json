@@ -1,0 +1,156 @@
+{
+  "format_version": 1,
+  "id": "05-searching",
+  "title": "Finding Things",
+  "level": 2,
+  "minutes": 8,
+  "summary": "Search inside files with grep and find files by name with find.",
+  "intro": "Something went wrong in a game, and a treasure is lost somewhere in your sandbox!\nIn this lesson you will search inside files with grep and find files by their name with find.\nThese two commands save programmers hours every day.",
+  "outro": "Detective work done! grep finds words inside files, and find finds the files themselves.",
+  "setup": [
+    {
+      "path": "game_log.txt",
+      "content": "INFO: game started\nINFO: player joined\nWARN: low health\nERROR: dragon not found\nINFO: level 2\nerror: low battery\nERROR: save failed\nINFO: game over\n"
+    },
+    {
+      "path": "project/README.md",
+      "content": "My game project\n"
+    },
+    {
+      "path": "project/src/main.py",
+      "content": "print('hello')\n# TODO: add sound\n"
+    },
+    {
+      "path": "project/src/utils/helpers.py",
+      "content": "def helper():\n    pass  # TODO: write this\n"
+    },
+    {
+      "path": "project/notes/ideas.txt",
+      "content": "A game with dragons.\n"
+    },
+    {
+      "path": "deep/a/b/c/treasure.txt",
+      "content": "You found the treasure!\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "The game crashed. Show only the lines with ERROR in game_log.txt.",
+      "hints": [
+        "grep WORD FILE shows only the lines that contain WORD.",
+        "Type: grep ERROR game_log.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^grep\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "ERROR: dragon not found"
+          }
+        ]
+      },
+      "explain": "grep shows every line that contains your word. It is case-sensitive: ERROR and error are different words for grep. Did you notice the line 'error: low battery' was missing?",
+      "solution": "grep ERROR game_log.txt"
+    },
+    {
+      "instruction": "Now find error in any case: ERROR, error, Error...",
+      "hints": [
+        "The option -i means 'ignore case' (ignore big and small letters).",
+        "Type: grep -i error game_log.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^grep\\s+(.*\\s)?-[a-zA-Z]*i"
+          },
+          {
+            "type": "output_contains",
+            "text": "error: low battery"
+          }
+        ]
+      },
+      "explain": "With -i, grep does not care about big or small letters. Options can be combined: -in is the same as -i -n.",
+      "solution": "grep -i error game_log.txt"
+    },
+    {
+      "instruction": "Show the lines with ERROR again, but this time WITH line numbers.",
+      "hints": [
+        "The option -n adds the line number in front of each line.",
+        "Type: grep -n ERROR game_log.txt"
+      ],
+      "check": {
+        "type": "output_contains",
+        "text": "4:ERROR: dragon not found"
+      },
+      "explain": "Now every line starts with its number, like 4:. Line numbers help you find the line again later, for example in an editor.",
+      "solution": "grep -n ERROR game_log.txt"
+    },
+    {
+      "instruction": "Find every TODO inside the folder project and all its subfolders.",
+      "hints": [
+        "The option -r means 'recursive': grep also looks in all the folders inside.",
+        "Type: grep -r TODO project"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "output_contains",
+            "text": "project/src/main.py"
+          },
+          {
+            "type": "output_contains",
+            "text": "helpers.py"
+          }
+        ]
+      },
+      "explain": "grep -r searches a whole folder tree and shows the file name in front of each line. Programmers use this every day to find notes and bugs in their code.",
+      "solution": "grep -r TODO project"
+    },
+    {
+      "instruction": "Somewhere in your sandbox is a file called treasure.txt. Find it!",
+      "hints": [
+        "Use find WHERE -name NAME. A single dot . means 'here'.",
+        "Type: find . -name treasure.txt"
+      ],
+      "check": {
+        "type": "output_contains",
+        "text": "deep/a/b/c/treasure.txt"
+      },
+      "explain": "Treasure found! grep looks INSIDE files, while find looks at file NAMES (and can also search by type, size and more).",
+      "solution": "find . -name treasure.txt"
+    },
+    {
+      "instruction": "Find all Python files: every file whose name ends in .py",
+      "hints": [
+        "The star * means 'anything'. So *.py means 'any name that ends with .py'. Put the pattern in quotes.",
+        "Type: find . -name \"*.py\""
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^find\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "helpers.py"
+          },
+          {
+            "type": "output_contains",
+            "text": "main.py"
+          }
+        ]
+      },
+      "explain": "Without quotes, the shell may replace *.py with matching file names before find even sees it. Quotes protect the pattern. Always write the folder too (like .): on macOS, find needs it.",
+      "solution": "find . -name \"*.py\""
+    }
+  ]
+}
