@@ -39,6 +39,15 @@ jobs:
           python --version
           bash --version | head -n 1
 
+      # macOS runners can have the application firewall on. It silently drops
+      # connections to a freshly started server (python3 -m http.server), so
+      # lessons 12 and 15 hang. On a student's Mac the firewall asks first.
+      - name: Allow local test servers (macOS firewall)
+        if: runner.os == 'macOS'
+        run: |
+          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate || true
+          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off || true
+
       - name: Lint (byte-compile everything)
         run: python -m compileall -q terminal_academy tests
 
@@ -49,6 +58,17 @@ jobs:
 
       - name: Launcher
         run: ./academy --version
+
+      - name: Debug local web server (only when tests failed)
+        if: failure() && runner.os == 'macOS'
+        run: |
+          command -v python3; python3 --version
+          cd "$(mktemp -d)" && echo hi > hi.txt
+          python3 -m http.server 8799 --bind 127.0.0.1 > server.log 2>&1 &
+          sleep 2
+          curl -v --max-time 5 http://127.0.0.1:8799/hi.txt || true
+          cat server.log
+          kill %1 || true
 
   stock-macos:
     # A Mac as a student gets it: Apple's own python3 (from the Xcode
@@ -63,8 +83,28 @@ jobs:
           /usr/bin/python3 --version
           /bin/bash --version | head -n 1
 
+      # macOS runners can have the application firewall on. It silently drops
+      # connections to a freshly started server (python3 -m http.server), so
+      # lessons 12 and 15 hang. On a student's Mac the firewall asks first.
+      - name: Allow local test servers (macOS firewall)
+        if: runner.os == 'macOS'
+        run: |
+          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate || true
+          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off || true
+
       - name: Unit tests
         run: /usr/bin/python3 -m unittest discover -s tests -v
 
       - name: Launcher
         run: PATH="/usr/bin:/bin" ./academy --version
+
+      - name: Debug local web server (only when tests failed)
+        if: failure() && runner.os == 'macOS'
+        run: |
+          command -v python3; python3 --version
+          cd "$(mktemp -d)" && echo hi > hi.txt
+          python3 -m http.server 8799 --bind 127.0.0.1 > server.log 2>&1 &
+          sleep 2
+          curl -v --max-time 5 http://127.0.0.1:8799/hi.txt || true
+          cat server.log
+          kill %1 || true
