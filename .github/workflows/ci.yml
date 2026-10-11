@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.9", "3.13"]
+        exclude:
+          # macos-latest runs on Apple Silicon (arm64), and actions/setup-python
+          # has no arm64 build of Python 3.9 for macOS (only x64).
+          - os: macos-latest
+            python: "3.9"
+        include:
+          # So Python 3.9 on macOS runs on the Intel image instead.
+          - os: macos-15-intel
+            python: "3.9"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Show versions
+        run: |
+          python --version
+          bash --version | head -n 1
+
+      - name: Lint (byte-compile everything)
+        run: python -m compileall -q terminal_academy tests
+
+      # The suite also checks that every lesson JSON file is valid and solvable,
+      # and that the landing page HTML files in site/ exist (tests/test_repo.py).
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Launcher
+        run: ./academy --version
+
+  stock-macos:
+    # A Mac as a student gets it: Apple's own python3 (from the Xcode
+    # command line tools) and the old bash 3.2 in /bin/bash.
+    name: Tests (macos-latest, system Python)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show versions
+        run: |
+          /usr/bin/python3 --version
+          /bin/bash --version | head -n 1
+
+      - name: Unit tests
+        run: /usr/bin/python3 -m unittest discover -s tests -v
+
+      - name: Launcher
+        run: PATH="/usr/bin:/bin" ./academy --version

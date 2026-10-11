@@ -180,3 +180,37 @@ stop the whole family later with one signal.
 - Not tested on a real Mac yet — only written to be portable. CI (stage 7)
   runs on macOS to cover this.
 
+### Stage 7 — Quality: tests, CI, README
+
+**What was done**
+- `tests/` — 156 tests with `unittest` (part of Python, no install needed).
+  They cover all 9 check types, the shell runner (cd, export, timeout,
+  background processes), the blocklist, progress saving, lesson
+  validation, the command-line interface and a full scripted run of a
+  lesson. The whole suite takes about 8 seconds.
+- **The most important test** (`test_lessons.py`): for every lesson file it
+  runs each step's `solution` and checks that the step fails *before* and
+  passes *after*. New lessons are tested automatically — just add the JSON.
+- `.github/workflows/ci.yml` — runs on every pull request: Ubuntu + macOS,
+  Python 3.9 + 3.13, plus one job with the Python and bash that a normal
+  Mac already has (Apple's `python3` and old bash 3.2).
+- New `README.md`: what it is, for whom, install, a **real** example
+  session (copied from a real run), commands, safety, layout, tests.
+
+**Decisions and why**
+- **`unittest`, not `pytest`.** pytest is nicer, but it is a dependency.
+  The project rule is "standard library only".
+- **The macOS "stock" job.** Students will not install a new Python. The
+  most likely real setup is Apple's Python 3.9 and bash 3.2, so we test
+  exactly that.
+
+**Concept to understand — CI (Continuous Integration):** a robot (GitHub
+Actions) runs the tests on clean machines for every pull request. If a
+change breaks something on macOS, you see a red ❌ before merging, not
+after a student complains.
+
+**Open questions**
+- macOS + Python 3.9 from `setup-python` runs on the Intel runner
+  `macos-15-intel` (there is no Apple Silicon build of 3.9). If GitHub
+  renames that runner, only the matrix needs a fix.
+
