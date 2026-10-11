@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brand guide — Terminal Academy</title>
+  <meta name="description" content="The Terminal Academy brand: logo, colors, typography, voice and the look of the command-line app.">
+  <meta name="theme-color" content="#1a1147">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .guide section { padding: 3.5rem 0; border-bottom: 3px solid var(--ink); }
+    .guide section:last-child { border-bottom: 0; }
+    .g-hero { background: var(--ink); color: var(--white); padding: 3.5rem 0 3rem; border-bottom: 6px solid var(--yellow); }
+    .g-hero h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); margin: 0 0 .6rem; }
+    .g-hero p { margin: 0; color: var(--on-dark); max-width: 60ch; }
+    .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .tile { margin: 0; border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; background: var(--white); }
+    .tile-art { display: grid; place-items: center; min-height: 220px; padding: 2rem; }
+    .tile-art.on-paper { background: var(--paper); }
+    .tile-art.on-ink { background: var(--ink); }
+    .tile-art.on-yellow { background: var(--yellow); }
+    .tile-cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; padding: .7rem 1rem; border-top: var(--border); font-size: .9rem; }
+    .tile-cap b { font-family: var(--display); }
+    .sizes { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2rem; padding: 1.5rem; border: var(--border); border-radius: var(--radius); background: var(--white); }
+    .sizes figure { margin: 0; text-align: center; font-family: var(--mono); font-size: .78rem; color: var(--text-soft); }
+    .sizes img { display: block; margin: 0 auto .5rem; }
+    .px16 { image-rendering: pixelated; }
+    .clear { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
+    .clear-box { position: relative; padding: 58px; border: 2px dashed var(--pink); background: repeating-linear-gradient(45deg, #ff4f8b14 0 8px, transparent 8px 16px); }
+    .clear-box img { display: block; width: 160px; height: 160px; background: var(--paper); }
+    .clear-box .x { position: absolute; font-family: var(--mono); font-size: .75rem; font-weight: 700; color: var(--pink); }
+    .clear-box .x.t { top: 20px; left: 50%; transform: translateX(-50%); }
+    .clear-box .x.l { left: 18px; top: 50%; transform: translateY(-50%); }
+    .rules { margin: 0; padding-left: 1.2rem; max-width: 52ch; }
+    .rules li { margin-bottom: .4rem; }
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
+    .sw { border: var(--border); border-radius: var(--radius); overflow: hidden; background: var(--white); box-shadow: var(--shadow); }
+    .sw-chip { height: 96px; border-bottom: var(--border); }
+    .sw-body { padding: .7rem .9rem .85rem; font-size: .88rem; }
+    .sw-body h3 { margin: 0 0 .2rem; font-size: 1.05rem; }
+    .sw-body p { margin: 0; color: var(--text-soft); }
+    .sw-meta { font-family: var(--mono); font-size: .8rem; color: var(--ink) !important; }
+    .type-grid { display: grid; gap: 1.25rem; }
+    .type { border: var(--border); border-radius: var(--radius); background: var(--white); padding: 1.25rem 1.4rem; display: grid; grid-template-columns: 220px 1fr; gap: 1rem 1.5rem; align-items: center; }
+    .type-meta { font-family: var(--mono); font-size: .8rem; color: var(--text-soft); }
+    .type-meta b { display: block; color: var(--ink); font-size: .9rem; }
+    .t-display { font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; letter-spacing: -.02em; margin: 0; }
+    .t-body { font-family: var(--sans); margin: 0; }
+    .t-mono { font-family: var(--mono); margin: 0; font-size: .95rem; overflow-wrap: anywhere; }
+    .voice { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .voice-card { border: var(--border); border-radius: var(--radius); padding: 1.25rem 1.4rem; background: var(--white); }
+    .voice-card.do { border-top: 10px solid var(--lime); }
+    .voice-card.dont { border-top: 10px solid var(--pink); }
+    .voice-card ul { margin: .5rem 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; }
+    .voice-card li { font-family: var(--mono); font-size: .82rem; border: 2px solid var(--ink); border-radius: 6px; padding: .05rem .45rem; }
+    .dont li { text-decoration: line-through; text-decoration-color: var(--pink); text-decoration-thickness: 2px; }
+    .voice-card p { margin: .75rem 0 0; color: var(--text-soft); font-size: .95rem; }
+    .examples { margin: 1.25rem 0 0; display: grid; gap: .6rem; }
+    .examples div { display: grid; grid-template-columns: 4.5rem 1fr; gap: .75rem; align-items: baseline; }
+    .examples dt { font-family: var(--mono); font-weight: 700; font-size: .8rem; }
+    .examples dd { margin: 0; }
+    .cli { background: #120c35; border: 3px solid var(--ink); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--yellow); overflow: hidden; }
+    .cli .term-bar { border-bottom: 3px solid var(--ink); }
+    .cli pre { margin: 0; padding: 1.1rem 1.25rem 1.3rem; overflow-x: auto; font-family: var(--mono); font-size: .85rem; line-height: 1.6; color: #e9e6fb; }
+    .c-y { color: #ffd75f; } .c-p { color: #ff5f87; } .c-c { color: #5fd7d7; } .c-l { color: #afd75f; } .c-d { color: #8a85b8; } .c-w { color: #ffffd7; font-weight: 700; }
+    .c-cur { background: #5fd7d7; color: #5fd7d7; }
+    .legend { list-style: none; padding: 0; margin: 1.25rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; font-family: var(--mono); font-size: .8rem; }
+    .legend span { display: inline-block; width: .9rem; height: .9rem; border: 2px solid var(--ink); vertical-align: -.15rem; margin-right: .35rem; }
+    .note { font-size: .9rem; color: var(--text-soft); margin: 1rem 0 0; }
+    @media (max-width: 760px) {
+      .tiles, .voice { grid-template-columns: 1fr; }
+      .type { grid-template-columns: 1fr; }
+      .tile-art { min-height: 170px; padding: 1.5rem; }
+      .clear-box { padding: 40px; }
+      .clear-box img { width: 120px; height: 120px; }
+      .clear-box .x.t { top: 12px; } .clear-box .x.l { left: 6px; }
+      .cli pre { font-size: .72rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../" aria-label="Terminal Academy home">
+        <img src="logo-wordmark-dark.svg" alt="Terminal Academy" width="216" height="36">
+      </a>
+      <nav aria-label="Brand guide">
+        <ul>
+          <li><a href="#logo">Logo</a></li>
+          <li><a href="#colors">Colors</a></li>
+          <li><a href="#type">Type</a></li>
+          <li><a href="#voice">Voice</a></li>
+          <li><a href="#cli">CLI</a></li>
+          <li><a href="../">Website</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="guide">
+    <div class="g-hero">
+      <div class="container">
+        <p class="eyebrow eyebrow-dark">// Brand guide</p>
+        <h1>Terminal Academy brand</h1>
+        <p>One look for the website and the command-line app: confident, friendly and a bit bold &mdash; a tech brand for teenagers, not a toy. Short mark: <strong>t//a</strong>. Tagline: <strong>Learn the terminal by doing.</strong></p>
+      </div>
+    </div>
+
+    <section id="logo" aria-labelledby="logo-title">
+      <div class="container">
+        <p class="eyebrow">// Logo</p>
+        <h2 id="logo-title">Logo variants</h2>
+        <p class="section-lead">The primary mark is <strong>t//a</strong> on an Ink rounded square, with Yellow slashes and a Cyan cursor. All logo files are drawn as shapes, so they never depend on fonts.</p>
+        <div class="tiles">
+          <figure class="tile">
+            <div class="tile-art on-paper"><img src="logo-mark.svg" alt="Primary mark" width="150" height="150"></div>
+            <figcaption class="tile-cap"><b>Primary mark</b><a href="logo-mark.svg">logo-mark.svg</a></figcaption>
+          </figure>
+          <figure class="tile">
+            <div class="tile-art on-ink"><img src="logo-mark-small.svg" alt="Small mark" width="96" height="96"></div>
+            <figcaption class="tile-cap"><b>Small mark (32px and below)</b><a href="logo-mark-small.svg">logo-mark-small.svg</a></figcaption>
+          </figure>
+          <figure class="tile">
+            <div class="tile-art on-paper"><img src="logo-wordmark.svg" alt="Wordmark, light version" width="330" height="55"></div>
+            <figcaption class="tile-cap"><b>Wordmark &middot; on light</b><a href="logo-wordmark.svg">logo-wordmark.svg</a></figcaption>
+          </figure>
+          <figure class="tile">
+            <div class="tile-art on-ink"><img src="logo-wordmark-dark.svg" alt="Wordmark, dark version" width="330" height="55"></div>
+            <figcaption class="tile-cap"><b>Wordmark &middot; on dark</b><a href="logo-wordmark-dark.svg">logo-wordmark-dark.svg</a></figcaption>
+          </figure>
+        </div>
+
+        <h3 style="margin-top:2.5rem">Sizes</h3>
+        <div class="sizes">
+          <figure><img class="px16" src="logo-mark-small.svg" alt="" width="16" height="16">16px</figure>
+          <figure><img src="logo-mark-small.svg" alt="" width="32" height="32">32px</figure>
+          <figure><img src="logo-mark-small.svg" alt="" width="64" height="64">64px small</figure>
+          <figure><img src="logo-mark.svg" alt="" width="64" height="64">64px primary</figure>
+          <figure><img src="logo-mark.svg" alt="" width="128" height="128">128px primary</figure>
+        </div>
+        <p class="note">Use the small mark (slashes + cursor) at 32px and below, the primary mark from 48px up.</p>
+
+        <h3 style="margin-top:2.5rem">Clear space and rules</h3>
+        <div class="clear">
+          <div class="clear-box"><span class="x t">x</span><span class="x l">x</span><img src="logo-mark.svg" alt="Primary mark with clear space around it"></div>
+          <ul class="rules">
+            <li><strong>Clear space</strong> on every side = <strong>x</strong>, the height of one slash.</li>
+            <li>Never stretch, squash, rotate or outline the logo.</li>
+            <li>Slashes are always Yellow &mdash; or Ink when the logo sits on a Yellow background.</li>
+            <li>Keep the Ink square; do not place the bare letters on busy photos.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="colors" aria-labelledby="colors-title">
+      <div class="container">
+        <p class="eyebrow">// Colors</p>
+        <h2 id="colors-title">Color palette</h2>
+        <p class="section-lead">The same palette is used on the web and in the terminal. ANSI 256 codes are the closest terminal colors.</p>
+        <ul class="swatches">
+          <li class="sw"><div class="sw-chip" style="background:#1a1147"></div><div class="sw-body"><h3>Ink</h3><p class="sw-meta">#1a1147 &middot; ANSI 61 (dim)</p><p>Main dark, text on light, icon background.</p></div></li>
+          <li class="sw"><div class="sw-chip" style="background:#2a1d6b"></div><div class="sw-body"><h3>Ink-2</h3><p class="sw-meta">#2a1d6b</p><p>Gradients and dark surfaces.</p></div></li>
+          <li class="sw"><div class="sw-chip" style="background:#fff8ec"></div><div class="sw-body"><h3>Paper</h3><p class="sw-meta">#fff8ec &middot; ANSI 230</p><p>Light background, text on dark.</p></div></li>
+          <li class="sw"><div class="sw-chip" style="background:#ffd23f"></div><div class="sw-body"><h3>Yellow</h3><p class="sw-meta">#ffd23f &middot; ANSI 221</p><p>Brand accent, the <code>//</code>.</p></div></li>
+          <li class="sw"><div class="sw-chip" style="background:#ff4f8b"></div><div class="sw-body"><h3>Pink</h3><p class="sw-meta">#ff4f8b &middot; ANSI 204</p><p>Secondary accent, highlights, Ank.</p></div></li>
+          <li class="sw"><div class="sw-chip" style="background:#3ee0d0"></div><div class="sw-body"><h3>Cyan</h3><p class="sw-meta">#3ee0d0 &middot; ANSI 80</p><p>Cursor, links on dark.</p></div></li>
+          <li class="sw"><div class="sw-chip" style="background:#9be564"></div><div class="sw-body"><h3>Lime</h3><p class="sw-meta">#9be564 &middot; ANSI 149</p><p>Success and checks.</p></div></li>
+        </ul>
+        <p class="note">Contrast: use Ink text on Paper, Yellow, Cyan, Lime and Pink. On Ink, use Paper, Yellow or Cyan text. Never put Pink text on Ink for body copy.</p>
+      </div>
+    </section>
+
+    <section id="type" aria-labelledby="type-title">
+      <div class="container">
+        <p class="eyebrow">// Typography</p>
+        <h2 id="type-title">Typography</h2>
+        <p class="section-lead">Three families from Google Fonts, each with a system fallback.</p>
+        <div class="type-grid">
+          <div class="type">
+            <p class="type-meta"><b>Space Grotesk 700</b>Headings &middot; fallback system-ui</p>
+            <p class="t-display">Learn the terminal by doing.</p>
+          </div>
+          <div class="type">
+            <p class="type-meta"><b>Inter 400 / 600</b>Body text &middot; fallback system-ui</p>
+            <p class="t-body">Each lesson gives you a task. You type real commands inside your own practice folder, and <strong>the app checks every step</strong>.</p>
+          </div>
+          <div class="type">
+            <p class="type-meta"><b>JetBrains Mono 400 / 700</b>Code &middot; fallback ui-monospace, Menlo</p>
+            <p class="t-mono">$ grep -r TODO project <strong>&#10003; correct</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="voice" aria-labelledby="voice-title">
+      <div class="container">
+        <p class="eyebrow">// Voice and tone</p>
+        <h2 id="voice-title">How we talk</h2>
+        <p class="section-lead">Confident, friendly, clear. Short sentences. We treat learners as capable people doing something real.</p>
+        <div class="voice">
+          <div class="voice-card do">
+            <h3>Say</h3>
+            <ul>
+              <li>lesson</li><li>level 1&ndash;5</li><li>course</li><li>map of the course</li><li>practice</li><li>sandbox</li><li>practice folder</li><li>mentor (Ank)</li><li>progress</li><li>task</li><li>hint</li>
+            </ul>
+            <p>Levels are real difficulty steps, not rewards.</p>
+          </div>
+          <div class="voice-card dont">
+            <h3>Don't say</h3>
+            <ul aria-label="Words we avoid">
+              <li>play</li><li>game</li><li>quest</li><li>level up</li><li>boss</li><li>badges</li><li>player</li><li>character</li><li>party</li><li>guild</li><li>XP</li><li>world</li><li>press start</li>
+            </ul>
+            <p>No game metaphors, no emoji as decoration, no rotated stickers, no blinking calls to action.</p>
+          </div>
+        </div>
+        <dl class="examples">
+          <div><dt>Write</dt><dd>&ldquo;Correct. grep -r searches a whole folder tree.&rdquo;</dd></div>
+          <div><dt>Write</dt><dd>&ldquo;The sandbox protects against accidents, not deliberate misuse.&rdquo;</dd></div>
+          <div><dt>Avoid</dt><dd>Hype, exclamation chains, and promises we cannot keep (&ldquo;100% safe&rdquo;, &ldquo;become a hacker&rdquo;).</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="cli" aria-labelledby="cli-title">
+      <div class="container">
+        <p class="eyebrow">// The CLI look</p>
+        <h2 id="cli-title">In the terminal</h2>
+        <p class="section-lead">The app uses the same colors through ANSI 256 codes. Below is a static mock of the welcome screen.</p>
+        <div class="cli" role="img" aria-label="Mock of the Terminal Academy welcome screen in a terminal: the t//a logo, a greeting from Ank, progress of 3 of 15 lessons, the lesson list by level and a prompt.">
+          <div class="term-bar">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="term-title">./academy</span>
+          </div>
+<pre aria-hidden="true">
+  <span class="c-w">t</span><span class="c-y">//</span><span class="c-w">a</span><span class="c-c">&#9646;</span>  <span class="c-w">Terminal Academy</span>
+  <span class="c-d">Learn the terminal by doing.</span>
+
+  <span class="c-p">Ank</span>  Hi, I'm Ank, your terminal mentor. You type real
+       commands, I check every step.
+
+  <span class="c-d">Progress</span>  <span class="c-l">&#9632;&#9632;&#9632;</span><span class="c-d">&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;</span>  3 / 15 lessons
+
+  <span class="c-y">Level 1</span>  <span class="c-w">Getting around</span>
+    <span class="c-l">&#10003;</span> 01  First Steps
+    <span class="c-l">&#10003;</span> 02  Moving Around
+    <span class="c-l">&#10003;</span> 03  Files and Folders
+  <span class="c-y">Level 2</span>  <span class="c-w">Working with text</span>
+    <span class="c-c">&#8250;</span> 04  Reading Files            <span class="c-c">next</span>
+      05  Finding Things
+      06  Pipes and Redirection
+  <span class="c-d">&middot;&middot;&middot; levels 3&ndash;5</span>
+
+  <span class="c-d">start 4 &middot; list &middot; explain &lt;command&gt; &middot; help &middot; quit</span>
+  <span class="c-l">&gt;</span> <span class="c-cur">&#9646;</span>
+</pre>
+        </div>
+        <ul class="legend" aria-label="Colors used in the terminal">
+          <li><span style="background:#ffd75f"></span>Yellow 221 &middot; logo slashes, level titles</li>
+          <li><span style="background:#ff5f87"></span>Pink 204 &middot; Ank</li>
+          <li><span style="background:#5fd7d7"></span>Cyan 80 &middot; cursor, next step</li>
+          <li><span style="background:#afd75f"></span>Lime 149 &middot; checks, prompt</li>
+          <li><span style="background:#5f5faf"></span>Dim 61 &middot; secondary text</li>
+          <li><span style="background:#ffffd7"></span>Paper 230 &middot; headings</li>
+        </ul>
+        <p class="note">Illustrative mock. The real app may differ in details, and it always works without colors too (<code>--no-color</code> or <code>NO_COLOR</code>).</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="footer-brand" href="../"><img src="logo-wordmark.svg" alt="Terminal Academy" width="216" height="36"></a>
+      <ul class="footer-links">
+        <li><a href="../">Website</a></li>
+        <li><a href="https://github.com/ank8dev/terminal-academy-by-ank">GitHub</a></li>
+      </ul>
+    </div>
+    <p class="container disclaimer">Provided "as is", without warranty (MIT License). Commands are real and run on your computer; the sandbox protects against accidents, not deliberate misuse. No servers, no accounts, no data collected.</p>
+  </footer>
+</body>
+</html>
