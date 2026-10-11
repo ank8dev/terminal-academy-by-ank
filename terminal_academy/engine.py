@@ -183,8 +183,11 @@ class LessonSession:
         return self._leave(DONE)
 
     def prompt(self) -> str:
-        return (self.ui.prompt_style("academy", "green", "bold")
-                + self.ui.prompt_style(":" + self.shell.relative_cwd(), "blue", "bold")
+        # The text stays "academy:~/folder $ " (the README shows it);
+        # only the colors are the brand ones.
+        return (self.ui.prompt_style("academy", "lime", "bold")
+                + self.ui.prompt_style(":", "yellow", "bold")
+                + self.ui.prompt_style(self.shell.relative_cwd(), "cyan", "bold")
                 + " $ ")
 
     # ----- main loop ------------------------------------------------------

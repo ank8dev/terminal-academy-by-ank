@@ -89,7 +89,8 @@ class App:
                 line += "  " + self.ui.style(
                     "%s needs %s" % (self.ui.sym["missing"], ", ".join(missing)), "yellow")
             self.ui.print(line)
-            self.ui.print("       " + self.ui.style(lesson["summary"], "dim"))
+            self.ui.print(self.ui.style(self.ui.wrap(lesson["summary"], indent="       "),
+                                        "dim"))
         self.ui.print("")
         self.ui.dim("%s done   %s in progress   %s not started   %s missing tool"
                     % (self.ui.sym["done"], self.ui.sym["progress"],
@@ -258,6 +259,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         except ImportError:
             pass
 
+    # On a terminal without UTF-8 (e.g. LANG=C), print "?" for symbols it
+    # cannot show instead of crashing with UnicodeEncodeError.
+    try:
+        sys.stdout.reconfigure(errors="replace")  # type: ignore[attr-defined]
+    except (AttributeError, ValueError):
+        pass
+
     no_color = bool(getattr(args, "no_color", False))
     ui = UI(color=colors_wanted(sys.stdout, no_color), readline_active=readline_active)
 
@@ -281,6 +289,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 1
 
     try:
+        if args.command in (None, "start"):
+            # Interactive use only: the boot animation checks for a real
+            # terminal itself, and Ctrl+C just skips it.
+            ui.boot(len(app.lessons))
         if args.command == "list":
             app.print_lessons()
             return 0
