@@ -147,14 +147,27 @@ Options that work with every command:
 
 ## Lessons
 
-| #  | Lesson            | Level | Time    | What you learn |
-|----|-------------------|-------|---------|----------------|
-| 1  | First Steps       | 1     | ~5 min  | Meet the terminal: pwd, ls, echo, clear and how to get help. |
-| 3  | Files and Folders | 1     | ~8 min  | Create, copy, move and delete files and folders. |
+| #  | Lesson | Level | Time | What you learn |
+|----|--------|-------|------|----------------|
+| 1 | First Steps | 1 | ~5 min | Meet the terminal: pwd, ls, echo, clear and how to get help. |
+| 2 | Moving Around | 1 | ~6 min | Walk through folders with cd, .. and ~, and find hidden files. |
+| 3 | Files and Folders | 1 | ~8 min | Create, copy, move and delete files and folders. |
+| 4 | Reading Files | 2 | ~6 min | Read files with cat, head and tail, count lines with wc and scroll with less. |
+| 5 | Finding Things | 2 | ~8 min | Search inside files with grep and find files by name with find. |
+| 6 | Pipes and Redirection | 2 | ~8 min | Save output into files with > and >>, and connect commands with the pipe \|. |
+| 7 | Who Can Do What? | 3 | ~7 min | Read permissions with ls -l, change them with chmod and run a script with ./ (dot slash). |
+| 8 | Your First Script | 3 | ~10 min | Write a real script: the #!/bin/sh line, $1, a for loop and $(...). |
+| 9 | Variables and PATH | 3 | ~8 min | Use environment variables like HOME, make your own with export, and add your own commands to PATH. |
+| 10 | Processes | 4 | ~8 min | See running programs, run them in the background and stop them: ps, &, $!, kill, jobs. |
+| 11 | Network Basics | 4 | ~7 min | Names, addresses, localhost, URLs and ports: hostname, /etc/hosts, ping, curl. |
+| 12 | Your Own Web Server | 4 | ~8 min | Start a real web server on your computer, talk to it with curl and stop it again. |
+| 13 | SSH Keys | 5 | ~8 min | Make an SSH key pair and learn which half is secret and which half you share. |
+| 14 | SSH Config | 5 | ~7 min | Give servers short nicknames in ~/.ssh/config and test it without connecting. |
+| 15 | Mini Project: Fan Site | 5 | ~10 min | Use everything you learned to build a tiny fan website and serve it on your own computer. |
 
-More lessons are listed in [LESSONS_PLAN.md](LESSONS_PLAN.md) and will be
-added soon. Lessons are JSON files in `terminal_academy/lessons/`; when you
-add one, add a row to this table too (`./academy list` shows the same info).
+Lessons are JSON files in `terminal_academy/lessons/` (format: see
+[LESSONS_PLAN.md](LESSONS_PLAN.md)). When you add one, add a row to this
+table too (`./academy list` shows the same info).
 
 ## Safety notes
 

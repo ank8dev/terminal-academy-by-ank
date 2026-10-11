@@ -1,0 +1,212 @@
+{
+  "format_version": 1,
+  "id": "15-mini-project",
+  "title": "Mini Project: Fan Site",
+  "level": 5,
+  "minutes": 10,
+  "summary": "Use everything you learned to build a tiny fan website and serve it on your own computer.",
+  "intro": "Final mission! Your downloads folder is a mess: pictures, text files, a song...\nTurn it into a tiny website for your favorite band, then serve it on your own computer.\nYou will use folders, wildcards, cp and mv, a script, permissions, a variable, a web server and curl.\nYou know all of this already. Ank believes in you!",
+  "outro": "Mission complete: you finished Terminal Academy! You organized files, fixed a script, built a website and ran your own server, all with text commands. What next? Learn an editor like nano, try git to save versions of your projects, and one day use ssh with a Raspberry Pi or a free cloud server. Keep exploring!",
+  "requires": [
+    "curl"
+  ],
+  "setup": [
+    {
+      "path": "downloads/band.jpg",
+      "content": ""
+    },
+    {
+      "path": "downloads/logo.png",
+      "content": ""
+    },
+    {
+      "path": "downloads/setlist.txt",
+      "content": "1. Intro\n2. Big Song\n3. Encore\n"
+    },
+    {
+      "path": "downloads/tour.txt",
+      "content": "Berlin, Paris, Tokyo\n"
+    },
+    {
+      "path": "downloads/song.mp3",
+      "content": ""
+    },
+    {
+      "path": "tools/build.sh",
+      "mode": "644",
+      "content": "#!/bin/sh\n: \"${SITE_NAME:?Please export SITE_NAME first}\"\necho \"<h1>$SITE_NAME</h1>\" > index.html\nfor f in text/*.txt; do\n  echo \"<p><a href=\\\"$f\\\">$f</a></p>\" >> index.html\ndone\n# TODO: print a message, so we know the build is finished\n"
+    },
+    {
+      "path": ".curlrc",
+      "content": "# Settings for curl in this lesson: no progress bar, but still show errors.\nsilent\nshow-error\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Make the folders site/images and site/text. Then move all .jpg and .png files from downloads into site/images.",
+      "hints": [
+        "mkdir -p can make several folders in one command. mv can move many files at once, and wildcards like downloads/*.jpg pick all matching files.",
+        "Type: mkdir -p site/images site/text   and then:   mv downloads/*.jpg downloads/*.png site/images/"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "dir_exists",
+            "path": "site/text"
+          },
+          {
+            "type": "file_exists",
+            "path": "site/images/band.jpg"
+          },
+          {
+            "type": "file_exists",
+            "path": "site/images/logo.png"
+          },
+          {
+            "type": "path_missing",
+            "path": "downloads/band.jpg"
+          },
+          {
+            "type": "path_missing",
+            "path": "downloads/logo.png"
+          }
+        ]
+      },
+      "explain": "Wildcards save a lot of typing: *.jpg means 'every file that ends with .jpg'. The shell finds the names for you before mv even starts.",
+      "solution": "mkdir -p site/images site/text\nmv downloads/*.jpg downloads/*.png site/images/"
+    },
+    {
+      "instruction": "Copy (not move!) all .txt files from downloads into site/text.",
+      "hints": [
+        "cp works with wildcards too.",
+        "Type: cp downloads/*.txt site/text/"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_exists",
+            "path": "site/text/setlist.txt"
+          },
+          {
+            "type": "file_exists",
+            "path": "site/text/tour.txt"
+          },
+          {
+            "type": "file_exists",
+            "path": "downloads/setlist.txt"
+          },
+          {
+            "type": "file_exists",
+            "path": "downloads/tour.txt"
+          }
+        ]
+      },
+      "explain": "cp keeps the originals in downloads. A copy is the simplest backup there is: if you break something in site, the old files are still there.",
+      "solution": "cp downloads/*.txt site/text/"
+    },
+    {
+      "instruction": "Read the script tools/build.sh. Add a line at the end that prints Build done! and then make the script executable (mode 755).",
+      "hints": [
+        "First read it: cat tools/build.sh. To add a line, use echo with single quotes and >>, so the line itself is an echo command.",
+        "Type: echo 'echo \"Build done!\"' >> tools/build.sh   and then:   chmod 755 tools/build.sh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_contains",
+            "path": "tools/build.sh",
+            "text": "Build done!"
+          },
+          {
+            "type": "file_mode",
+            "path": "tools/build.sh",
+            "mode": "755"
+          }
+        ]
+      },
+      "explain": "Reading a script before you run it is a great habit: now you know it needs a variable called SITE_NAME and that it writes index.html. 755 means you can run it, and everybody else may read and run it.",
+      "solution": "echo 'echo \"Build done!\"' >> tools/build.sh\nchmod 755 tools/build.sh"
+    },
+    {
+      "instruction": "Build the site! Set the variable SITE_NAME to your band's name (with export), go into the folder site, and run ../tools/build.sh from there.",
+      "hints": [
+        "If you see 'Please export SITE_NAME first', the script is telling you what to do! The .. in ../tools/build.sh means 'one folder up'.",
+        "Type: export SITE_NAME=\"The Terminal Cats\"   then:   cd site   then:   ../tools/build.sh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "output_contains",
+            "text": "Build done!"
+          },
+          {
+            "type": "file_contains",
+            "path": "site/index.html",
+            "text": "text/setlist.txt"
+          }
+        ]
+      },
+      "explain": "The script used your variable for the title and a for loop to write one link per text file. Take a look with cat index.html: that's real HTML, written by a script you fixed!",
+      "solution": "export SITE_NAME=\"The Terminal Cats\"\ncd site\n../tools/build.sh"
+    },
+    {
+      "instruction": "Show it to the world (well, to your own computer). Stay in the site folder and start a web server on port 8766 in the background, only for this computer. Wait a second, then get the main page with curl.",
+      "hints": [
+        "Remember lesson 12: python3 -m http.server PORT --bind 127.0.0.1 &   Don't forget the & at the end! Then ask it with curl http://127.0.0.1:8766/",
+        "Type: python3 -m http.server 8766 --bind 127.0.0.1 &   and then:   curl http://127.0.0.1:8766/   (If you see 'Address already in use', a server is already running: just try the curl.)"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b.*http://"
+          },
+          {
+            "type": "output_contains",
+            "text": "<h1>"
+          },
+          {
+            "type": "output_contains",
+            "text": "setlist.txt"
+          }
+        ]
+      },
+      "explain": "You built a website and served it, using only the terminal! The server shares the folder it was started in, and index.html is the page a server shows first. In a browser, http://127.0.0.1:8766/ would show the same page.",
+      "solution": "python3 -m http.server 8766 --bind 127.0.0.1 &\nsleep 1\ncurl http://127.0.0.1:8766/",
+      "requires": [
+        "curl"
+      ]
+    },
+    {
+      "instruction": "Clean up: stop your server with kill. Then run the same curl again, to prove the server is really gone.",
+      "hints": [
+        "Find the PID (the number in the 2nd column) with: ps aux | grep http.server   (ignore the line for grep itself). Then: kill PID (use YOUR number).",
+        "Type: kill 12345 (with your PID)   and then:   curl http://127.0.0.1:8766/   It should say 'Failed to connect' or 'Connection refused'. That's the good ending here!"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b.*http://"
+          },
+          {
+            "type": "output_contains",
+            "text": "curl: (7)",
+            "stream": "both"
+          }
+        ]
+      },
+      "explain": "The error means nobody is listening on port 8766 any more, so your server really stopped. Always stop servers you don't need (the app also stops them when you leave a lesson).",
+      "solution": "kill $(ps auxww | grep '[h]ttp.server 8766' | awk '{print $2}')\nsleep 1\ncurl http://127.0.0.1:8766/",
+      "requires": [
+        "curl"
+      ]
+    }
+  ]
+}

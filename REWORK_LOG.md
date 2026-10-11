@@ -214,3 +214,43 @@ after a student complains.
   `macos-15-intel` (there is no Apple Silicon build of 3.9). If GitHub
   renames that runner, only the matrix needs a fix.
 
+### Stage 8 — The 15 lessons
+
+**What was done**
+- All 15 lessons from `LESSONS_PLAN.md` are now JSON files in
+  `terminal_academy/lessons/` (01 and 03 came in stage 6, the other 13 here).
+- Four subagents wrote them in parallel (each had its own files): 02–06,
+  07–09, 10–12, 13–15. Each agent ran every solution through the real
+  engine and played its lessons in the real app.
+- The README lesson table now lists all 15 lessons.
+- Small engine fix found while writing lessons: error messages showed
+  `bash: line 17: ...` — the "17" is a line of the app's internal wrapper,
+  not of the student's command. The app now removes it.
+
+**Changes from the plan (and why)**
+- `pkill` is on the blocklist (it can kill many programs by name), so
+  lessons 10, 12 and 15 use `kill <PID>` instead. This also teaches the
+  idea of a PID (process id) better.
+- Several checks became **stricter**, so a student cannot "pass" by just
+  typing `echo` with the expected text. Example: lesson 7 must run the
+  script with `./hello.sh`, not `sh hello.sh`.
+- Lessons 11, 12, 15 put a hidden `.curlrc` in the sandbox so `curl` does
+  not print a noisy progress bar (the app captures output into files, and
+  then curl thinks it is not in a terminal).
+- Lessons 12 and 15 use ports 8765 and 8766 (rare numbers, so they do not
+  fight with other programs).
+- Steps that need a tool that may be missing (`ping`, `ssh-keygen`,
+  `curl`, `pgrep`) list it in `requires`; the app skips them politely.
+
+**Concept to understand — PID:** every running program has a number, its
+*process id*. `kill 1234` sends a signal to the program with PID 1234.
+`$!` in bash is the PID of the last program you started with `&`.
+
+**Open questions**
+- Not tested on a real Mac (only Linux here). CI runs macOS jobs, which is
+  the first real check. Most risky spots: `ps` output format, `jobs` text in
+  bash 3.2, `python3 -m http.server --bind` on Apple's Python 3.9.
+- Lessons 12 and 15 use fixed ports. If two test runs happen at the same
+  time on one machine, they can disturb each other. In CI every job has its
+  own machine, so it is fine.
+

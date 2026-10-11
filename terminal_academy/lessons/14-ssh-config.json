@@ -1,0 +1,125 @@
+{
+  "format_version": 1,
+  "id": "14-ssh-config",
+  "title": "SSH Config",
+  "level": 5,
+  "minutes": 7,
+  "summary": "Give servers short nicknames in ~/.ssh/config and test it without connecting.",
+  "intro": "Typing ssh -p 2222 -i ~/.ssh/id_academy student@192.168.1.50 every time is no fun.\nThe file ~/.ssh/config lets you give a server a nickname, so later you just type: ssh myserver\nIn this lesson you write that file line by line. Nothing connects anywhere, it's only a text file.\nThe .ssh folder is already there for you.",
+  "outro": "Your SSH config is ready! With a real server, ssh myserver would now use the right address, user, port and key all by itself. Pro tip: you can have many Host blocks in one config file, one for each computer.",
+  "setup": [
+    {
+      "path": ".ssh",
+      "dir": true,
+      "mode": "700"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Create the file .ssh/config with the line: Host myserver",
+      "hints": [
+        "echo prints text, and > writes it into a file (a new file, or it replaces the old content).",
+        "Type: echo 'Host myserver' > .ssh/config"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": ".ssh/config",
+        "text": "Host myserver"
+      },
+      "explain": "Host starts a block for one server, and myserver is the nickname. All the lines after it (until the next Host line) are settings for this nickname.",
+      "solution": "echo 'Host myserver' > .ssh/config"
+    },
+    {
+      "instruction": "Add the real address of the server: the line   HostName 192.168.1.50   (two spaces at the start).",
+      "hints": [
+        "Careful: > would replace the file. Use >> to add a line at the end. The spaces at the start are only there to make it easy to read.",
+        "Type: echo '  HostName 192.168.1.50' >> .ssh/config"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": ".ssh/config",
+        "text": "HostName 192.168.1.50"
+      },
+      "explain": "HostName is the real address: an IP address like 192.168.1.50, or a name like pi.local or example.com. The nickname is only for you.",
+      "solution": "echo '  HostName 192.168.1.50' >> .ssh/config"
+    },
+    {
+      "instruction": "Add two more lines: the user name   User student   and the port   Port 2222",
+      "hints": [
+        "Two echo commands, both with >>. Check your work with: cat .ssh/config",
+        "Type: echo '  User student' >> .ssh/config   and then:   echo '  Port 2222' >> .ssh/config"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_contains",
+            "path": ".ssh/config",
+            "text": "User student"
+          },
+          {
+            "type": "file_contains",
+            "path": ".ssh/config",
+            "text": "Port 2222"
+          }
+        ]
+      },
+      "explain": "User is the account name on the server. Port is the 'door number': the normal SSH port is 22, but some servers use another one.",
+      "solution": "echo '  User student' >> .ssh/config\necho '  Port 2222' >> .ssh/config"
+    },
+    {
+      "instruction": "Tell SSH which key to use for this server. Add the line   IdentityFile ~/.ssh/id_academy",
+      "hints": [
+        "Same as before: echo with >>. Use single quotes, so the ~ stays a ~ in the file.",
+        "Type: echo '  IdentityFile ~/.ssh/id_academy' >> .ssh/config"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": ".ssh/config",
+        "text": "IdentityFile ~/.ssh/id_academy"
+      },
+      "explain": "IdentityFile points to your PRIVATE key (the file without .pub), like the one you made in the last lesson. Now SSH knows which key belongs to which server.",
+      "solution": "echo '  IdentityFile ~/.ssh/id_academy' >> .ssh/config"
+    },
+    {
+      "instruction": "Protect your config: make it readable and writable only by you (mode 600).",
+      "hints": [
+        "6 = read + write for you, 0 for the group, 0 for everyone else.",
+        "Type: chmod 600 .ssh/config"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^chmod\\b"
+          },
+          {
+            "type": "file_mode",
+            "path": ".ssh/config",
+            "mode": "600"
+          }
+        ]
+      },
+      "explain": "If other people could change your config, they could send you to a fake server. That's why SSH may refuse a config file that others can write. Look at it with ls -l .ssh: you should see -rw-------.",
+      "solution": "chmod 600 .ssh/config"
+    },
+    {
+      "instruction": "Bonus: ask SSH what it WOULD do for myserver, without connecting. Show only the lines for hostname, user and port.",
+      "hints": [
+        "ssh -F picks the config file, and -G means 'only print the settings, don't connect'. A pipe into grep filters the long list.",
+        "Type: ssh -F .ssh/config -G myserver | grep -i -E \"^(hostname|user|port) \""
+      ],
+      "check": {
+        "type": "output_contains",
+        "text": "hostname 192.168.1.50"
+      },
+      "explain": "SSH read your nickname and found the real address, user and port. (A note about 'Pseudo-terminal' is normal here, you can ignore it.) The first time you really connect to a server, SSH asks 'Are you sure you want to continue connecting?' and saves the server's key in ~/.ssh/known_hosts. Next time it checks that key, which protects you from fake servers.",
+      "solution": "ssh -F .ssh/config -G myserver | grep -i -E \"^(hostname|user|port) \"",
+      "requires": [
+        "ssh"
+      ],
+      "optional": true
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "format_version": 1,
+  "id": "13-ssh-keys",
+  "title": "SSH Keys",
+  "level": 5,
+  "minutes": 8,
+  "summary": "Make an SSH key pair and learn which half is secret and which half you share.",
+  "intro": "SSH is a safe way to use the terminal of ANOTHER computer, like a web server or a Raspberry Pi.\nInstead of a password, SSH can use a key pair: two files that belong together.\nThe private key is your secret. The public key is like a lock you can give to any server.\nNo real server is used here: the folder fake_server/ only pretends to be a server's disk.\nIn Terminal Academy your home folder (~) is your sandbox, so ~/.ssh is just .ssh here.",
+  "outro": "You made a real SSH key pair and 'installed' it on a server! Remember the golden rule: the private key never leaves your computer. For real keys, always use a passphrase.",
+  "requires": [
+    "ssh-keygen"
+  ],
+  "setup": [
+    {
+      "path": "fake_server/home/student/.ssh",
+      "dir": true,
+      "mode": "700"
+    },
+    {
+      "path": "README.txt",
+      "content": "fake_server/ pretends to be a server's disk.\nOn a real server, your public key would go into /home/student/.ssh/authorized_keys\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "SSH keeps its files in a folder called .ssh in your home folder. Create the folder .ssh and make it private (mode 700).",
+      "hints": [
+        "Two commands: mkdir makes the folder, chmod changes who may use it.",
+        "Type: mkdir .ssh   and then:   chmod 700 .ssh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "dir_exists",
+            "path": ".ssh"
+          },
+          {
+            "type": "file_mode",
+            "path": ".ssh",
+            "mode": "700"
+          }
+        ]
+      },
+      "explain": "700 means only you can open this folder. SSH is picky: it refuses to use keys that other people could read. The dot at the start makes the folder hidden, so plain ls does not show it (ls -a does).",
+      "solution": "mkdir .ssh\nchmod 700 .ssh"
+    },
+    {
+      "instruction": "Now make a key pair! Create an ed25519 key in the file .ssh/id_academy, with no passphrase (just for practice) and the comment student@academy.",
+      "hints": [
+        "The tool is ssh-keygen. Options: -t = type of key, -f = file name, -N \"\" = empty passphrase, -C = comment.",
+        "Type: ssh-keygen -t ed25519 -f .ssh/id_academy -N \"\" -C \"student@academy\""
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_exists",
+            "path": ".ssh/id_academy"
+          },
+          {
+            "type": "file_exists",
+            "path": ".ssh/id_academy.pub"
+          }
+        ]
+      },
+      "explain": "You got TWO files: id_academy is the private key (never share it, not even with friends!) and id_academy.pub is the public key (safe to share). The funny picture is the 'randomart', a drawing of your key. For real keys, use a passphrase: then a stolen key file is useless.",
+      "solution": "ssh-keygen -t ed25519 -f .ssh/id_academy -N \"\" -C \"student@academy\"",
+      "requires": [
+        "ssh-keygen"
+      ]
+    },
+    {
+      "instruction": "Look at the files in .ssh in long format, so you can see their permissions.",
+      "hints": [
+        "ls -l shows the long format. Add the folder name at the end.",
+        "Type: ls -l .ssh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^ls\\s+.*-[a-zA-Z]*l"
+          },
+          {
+            "type": "output_contains",
+            "text": "rw-------"
+          }
+        ]
+      },
+      "explain": "See -rw------- on the private key? That is mode 600: only you can read it. ssh-keygen did that for you. The .pub file is -rw-r--r--, because everybody may read a public key.",
+      "solution": "ls -l .ssh",
+      "requires": [
+        "ssh-keygen"
+      ]
+    },
+    {
+      "instruction": "Show your public key on the screen.",
+      "hints": [
+        "It is the file whose name ends with .pub. cat prints a file.",
+        "Type: cat .ssh/id_academy.pub"
+      ],
+      "check": {
+        "type": "output_contains",
+        "text": "ssh-ed25519 "
+      },
+      "explain": "Your public key is just one line: the key type, a long code, and your comment. This line is what you paste into GitHub or send to the person who runs a server. Never cat the private key for someone else!",
+      "solution": "cat .ssh/id_academy.pub",
+      "requires": [
+        "ssh-keygen"
+      ]
+    },
+    {
+      "instruction": "Show the fingerprint of your public key (a short ID for it).",
+      "hints": [
+        "ssh-keygen can do more than make keys: -l means 'list the fingerprint', -f picks the file.",
+        "Type: ssh-keygen -l -f .ssh/id_academy.pub"
+      ],
+      "check": {
+        "type": "output_contains",
+        "text": "ED25519"
+      },
+      "explain": "A fingerprint is like a short ID card for a key. The long key is hard to compare by eye, but two fingerprints are easy to compare: same fingerprint, same key.",
+      "solution": "ssh-keygen -l -f .ssh/id_academy.pub",
+      "requires": [
+        "ssh-keygen"
+      ]
+    },
+    {
+      "instruction": "Install your key on the (fake) server: add your public key to the file fake_server/home/student/.ssh/authorized_keys",
+      "hints": [
+        "cat prints the key, and >> adds it to the end of a file (it creates the file if it is missing).",
+        "Type: cat .ssh/id_academy.pub >> fake_server/home/student/.ssh/authorized_keys"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": "fake_server/home/student/.ssh/authorized_keys",
+        "text": "ssh-ed25519 "
+      },
+      "explain": "On a real server, authorized_keys is the guest list: every public key in it may log in. When you connect, SSH proves you have the matching private key, without ever sending it. In real life, ssh-copy-id user@server does this step for you.",
+      "solution": "cat .ssh/id_academy.pub >> fake_server/home/student/.ssh/authorized_keys",
+      "requires": [
+        "ssh-keygen"
+      ]
+    }
+  ]
+}
