@@ -16,12 +16,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # macos-15, not macos-latest: on the macos-26 arm64 image a plain
+        # `curl http://127.0.0.1:PORT` to `python3 -m http.server` times out
+        # (reproduced outside the app), which breaks lessons 12 and 15.
+        os: [ubuntu-latest, macos-15]
         python: ["3.9", "3.13"]
         exclude:
-          # macos-latest runs on Apple Silicon (arm64), and actions/setup-python
+          # macos-15 runs on Apple Silicon (arm64), and actions/setup-python
           # has no arm64 build of Python 3.9 for macOS (only x64).
-          - os: macos-latest
+          - os: macos-15
             python: "3.9"
         include:
           # So Python 3.9 on macOS runs on the Intel image instead.
@@ -38,15 +41,6 @@ jobs:
         run: |
           python --version
           bash --version | head -n 1
-
-      # macOS runners can have the application firewall on. It silently drops
-      # connections to a freshly started server (python3 -m http.server), so
-      # lessons 12 and 15 hang. On a student's Mac the firewall asks first.
-      - name: Allow local test servers (macOS firewall)
-        if: runner.os == 'macOS'
-        run: |
-          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate || true
-          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off || true
 
       - name: Lint (byte-compile everything)
         run: python -m compileall -q terminal_academy tests
@@ -73,8 +67,8 @@ jobs:
   stock-macos:
     # A Mac as a student gets it: Apple's own python3 (from the Xcode
     # command line tools) and the old bash 3.2 in /bin/bash.
-    name: Tests (macos-latest, system Python)
-    runs-on: macos-latest
+    name: Tests (macos-15, system Python)
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
@@ -82,15 +76,6 @@ jobs:
         run: |
           /usr/bin/python3 --version
           /bin/bash --version | head -n 1
-
-      # macOS runners can have the application firewall on. It silently drops
-      # connections to a freshly started server (python3 -m http.server), so
-      # lessons 12 and 15 hang. On a student's Mac the firewall asks first.
-      - name: Allow local test servers (macOS firewall)
-        if: runner.os == 'macOS'
-        run: |
-          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate || true
-          sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off || true
 
       - name: Unit tests
         run: /usr/bin/python3 -m unittest discover -s tests -v

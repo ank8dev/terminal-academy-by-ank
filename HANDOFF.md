@@ -116,7 +116,13 @@ site/                   static landing pages v1/v2/v3 + chooser (GitHub Pages)
    on a machine where another process has the same text it could stop that one.
 8. **Steps that need `ping`, `ssh-keygen`, `curl`, `pgrep`** are auto-skipped
    when the tool is missing; those students see less of lessons 11–15.
-9. **Security note from the audit:** the old desktop code (still in git
+9. **macOS 26 (Tahoe) and local web servers.** On GitHub's `macos-26-arm64`
+   runner image, `curl http://127.0.0.1:PORT` to a fresh `python3 -m http.server`
+   times out, even outside the app. CI therefore uses `macos-15`. Nobody knows
+   yet if a real macOS 26 Mac behaves the same (maybe a "Local Network"
+   permission prompt). If it does, lessons 12 and 15 need a workaround.
+   Check this on a real Mac with macOS 26.
+10. **Security note from the audit:** the old desktop code (still in git
    history) contained a root SSH login to a private server IP. The owner
    should check / rotate access to that server.
 
