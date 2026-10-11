@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import curses
 import time
 import sys
 import collections
-from auth import verify_session, AuthenticationError
 
 # ---------------------------------------------------------------------------
 # Color Pair Constants
@@ -25,12 +26,11 @@ COLOR_BORDER    = 9
 focus_mode        = "COMMAND"   # "COMMAND" | "MENU"
 selected_menu_idx = 0
 menu_state        = "MAIN"      # "MAIN" | "CURRICULUM"
-menu_options = [
+MAIN_MENU_OPTIONS = [
     "1. Course Curriculum",
-    "2. Tariffs & Pricing",
-    "3. System Docs"
+    "2. System Docs",
 ]
-user_tier         = "devops_professional"
+menu_options      = list(MAIN_MENU_OPTIONS)
 
 
 # ---------------------------------------------------------------------------
@@ -79,7 +79,6 @@ class AcademyCurriculumEngine:
             elif self.module_state == 1 and ("ssh-copy-id" in cmd or "cat ~/.ssh/id_" in cmd):
                 self.module_state = 2
                 self.modules["1"]["status"] = "COMPLETED"
-                self.modules["2"]["status"] = "READY"
                 return (
                     "ank: [MODULE 1: COMPLETED]\n\n"
                     "Public key deployed. Password auth disabled.\n"
@@ -94,7 +93,7 @@ class AcademyCurriculumEngine:
     def build_boot_syllabus(self) -> str:
         """
         Generates the dynamic syllabus index injected into the mentor's
-        post-auth boot message. Renders status badge inline per module.
+        boot message. Renders status badge inline per module.
         """
         status_badge = {
             "READY":     "[READY]",
@@ -122,19 +121,14 @@ class SocraticMentor:
     Never spoils answers — guides with leading conceptual questions only.
     SOLO Taxonomy Level 3 (Relational) gate enforcement.
     """
-    def __init__(self):
-        self.name = "ank"
-        self.tone = "sarcastic_architect"
-
     def intercept_cheat(self, user_input: str) -> str | None:
         """
-        First-pass cheat detection: pattern-match forbidden bypass signatures.
+        Cheat detection: pattern-match forbidden bypass signatures.
         Returns an ank rebuke string if triggered, None if clean.
-        FIX: this method was previously defined but never called in process_command().
         """
         forbidden_patterns = [
             "password123", "bypass_gate", "--force-approve",
-            "admin_bypass", "token_key",
+            "admin_bypass", "token_key", "skip_logic",
         ]
         for pattern in forbidden_patterns:
             if pattern in user_input:
@@ -173,7 +167,7 @@ class TerminalAnimationEngine:
 
 
 # ---------------------------------------------------------------------------
-# Keystroke Analyzer  (NEW — replaces the naive 8 ms single-delta check)
+# Keystroke Analyzer
 # ---------------------------------------------------------------------------
 class KeystrokeAnalyzer:
     """
@@ -247,40 +241,7 @@ class KeystrokeAnalyzer:
 
 
 # ---------------------------------------------------------------------------
-# Rule Enforcement Engine
-# ---------------------------------------------------------------------------
-class RuleEnforcementEngine:
-    """
-    Second-pass cheat detection: command-level payload scan.
-    Operates at deterministic temperature T=0.1 (enforced by pre-scripted
-    responses — no stochastic generation at this layer).
-    """
-    def __init__(self):
-        self.history_buffer          = []
-        self.deterministic_temperature = 0.1   # annotation; enforced by design
-
-    def evaluate_input(self, user_command: str) -> dict:
-        self.history_buffer.append(user_command)
-        cheat_payloads = [
-            "bypass_gate", "--force-approve", "skip_logic",
-            "password123", "admin_bypass", "token_key",
-        ]
-        for payload in cheat_payloads:
-            if payload in user_command:
-                return {
-                    "intercepted": True,
-                    "response": (
-                        "[ank]: [TRACE INTERCEPTED // SECURITY ALARM ACTIVATED]\n"
-                        "SYS_ALARM: METACOGNITIVE BYPASS DETECTED.\n\n"
-                        "Nice try, kid. Attempting to subvert the Explanation Gate "
-                        "is an architectural failure. Type the manual configuration honestly."
-                    ),
-                }
-        return {"intercepted": False, "response": "COMMAND_FORWARDED_TO_SENTRY"}
-
-
-# ---------------------------------------------------------------------------
-# SOLO Evaluation Gate  (T = 0.1 — deterministic keyword-rubric scoring)
+# SOLO Evaluation Gate  (deterministic keyword-rubric scoring)
 # ---------------------------------------------------------------------------
 class SoloEvaluationGate:
     """
@@ -288,13 +249,8 @@ class SoloEvaluationGate:
     to supply a SOLO Taxonomy Level 3 (Relational) structural explanation
     before the command is allowed to proceed.
 
-    Temperature T = 0.1 is enforced architecturally:
-      - Evaluation is deterministic keyword-rubric scoring, not stochastic.
-      - The same explanation always produces the same pass/fail result.
-      - No LLM inference call is made; rubrics are pre-scripted per command
-        category, anchored to structural mechanical concepts (not synonyms).
-      - This mirrors Piaget's Formal Operational stage: the evaluator demands
-        abstract structural reasoning, not rote surface description.
+    Evaluation is plain substring keyword counting against a pre-scripted
+    rubric per command category. No model is involved.
 
     Gate lifecycle (managed by process_command):
       IDLE     → command classified → ARMED (gate_question displayed)
@@ -341,7 +297,6 @@ class SoloEvaluationGate:
     # ---------------------------------------------------------------------------
     # SOLO L3 Rubrics — per command category.
     # 'keywords': structural mechanical terms the student MUST reference.
-    # 'min_hits': distinct keyword hits required (default MIN_HITS=3 applies).
     # 'gate_question': the Socratic question ank poses before execution.
     # 'fail_redirect': sharpened re-prompt on incorrect/shallow explanation.
     # ---------------------------------------------------------------------------
@@ -688,7 +643,7 @@ class SoloEvaluationGate:
 
     def evaluate_explanation(self, explanation: str) -> dict:
         """
-        Deterministic SOLO L3 scorer (T = 0.1).
+        Deterministic SOLO L3 scorer (keyword counting).
 
         Counts distinct rubric keyword hits in the lowercased explanation.
         Requires MIN_HITS unique hits to pass. Returns:
@@ -699,7 +654,7 @@ class SoloEvaluationGate:
         """
         rubric   = self.RUBRICS.get(self.category, {})
         keywords = rubric.get("keywords", [])
-        required = rubric.get("min_hits", self.MIN_HITS)
+        required = self.MIN_HITS
         expl_low = explanation.lower()
 
         hits = sum(1 for kw in keywords if kw in expl_low)
@@ -730,78 +685,12 @@ class SoloEvaluationGate:
 
 
 # ---------------------------------------------------------------------------
-# Subscription Tier Matrix  (single authoritative definition)
-# FIX: duplicate dead-code copy at lines 594-620 removed.
-# ---------------------------------------------------------------------------
-class SubscriptionTierMatrix:
-    def __init__(self):
-        self.tiers = {
-            "socratic_starter": {
-                "price":                    "$15/mo",
-                "cpu_limit":                0.25,
-                "ram_limit":                "512MiB",
-                "disk_limit":               "1GB",
-                "scale_to_zero_timeout_min": 10,
-                "network_policy":           "STRICT_WHITE_LIST",
-                "ai_query_cap":             200,
-            },
-            "devops_professional": {
-                "price":                    "$29/mo",
-                "cpu_limit":                0.5,
-                "ram_limit":                "1GiB",
-                "disk_limit":               "5GB",
-                "max_concurrent_sandboxes": 3,
-                "scale_to_zero_timeout_min": 15,
-                "network_policy":           "DYNAMIC_EBPF_MONITORING",
-                "ai_query_cap":             float("inf"),
-            },
-        }
-
-    def enforce_tier_constraints(self, tier_name: str) -> dict:
-        return self.tiers.get(tier_name, self.tiers["socratic_starter"])
-
-
-# ---------------------------------------------------------------------------
-# eBPF Security Interceptor
-# ---------------------------------------------------------------------------
-class EBPFSecurityInterceptor:
-    """
-    Simulates tcsetattr uprobe password masking via eBPF.
-    Intercepts any buffer containing 'sudo' or 'password' keywords
-    and replaces with <HIDDEN_CREDENTIAL> token.
-    """
-    def __init__(self):
-        self.echo_state = "ECHO_ON"
-
-    def process_buffer(self, user_input: str) -> str:
-        if "sudo " in user_input or "password" in user_input:
-            self.echo_state = "BLIND"
-            return "<HIDDEN_CREDENTIAL> // MOCKED_EBPF_UPROBE_MASK_SUCCESS"
-        self.echo_state = "ECHO_ON"
-        return user_input
-
-
-# ---------------------------------------------------------------------------
-# Presidio Sidecar Scrubber (Microsoft Presidio abstraction)
-# ---------------------------------------------------------------------------
-class PresidioSidecarScrubber:
-    """Abstracted Microsoft Presidio Tiered Execution Policy placeholder."""
-    def sanitize_logs(self, telemetry_payload: str) -> str:
-        return "[PRESIDIO_CLEAN]: " + telemetry_payload
-
-
-# ---------------------------------------------------------------------------
-# Streaming Mentor Renderer  (NEW — encapsulates former module-level globals)
+# Streaming Mentor Renderer
 # ---------------------------------------------------------------------------
 class StreamingMentorRenderer:
     """
     Manages the character-by-character typing stream animation for ank's
-    dialogue output in the ANK Monitor pane.
-
-    Previously implemented as naked module-level globals
-    (mentor_visible_lines, mentor_queue, last_stream_tick, stream_delay).
-    Encapsulation here eliminates global-state fragility and enables
-    future multi-mentor or concurrent-channel scenarios.
+    dialogue output in the mentor pane.
     """
     STREAM_DELAY_S = 0.02   # 20 ms per character — readable but snappy
 
@@ -843,11 +732,7 @@ class StreamingMentorRenderer:
 mentor           = SocraticMentor()
 warning_state    = False
 animation_engine = TerminalAnimationEngine()
-rule_engine      = RuleEnforcementEngine()
 keystroke_analyzer = KeystrokeAnalyzer()
-ebpf_interceptor = EBPFSecurityInterceptor()
-presidio_scrubber = PresidioSidecarScrubber()
-tier_matrix      = SubscriptionTierMatrix()
 mentor_renderer  = StreamingMentorRenderer()
 solo_gate        = SoloEvaluationGate()      # Explanation gate singleton
 
@@ -866,21 +751,12 @@ curriculum_text = (
     "ank: Choose a module to inspect its engineering track details."
 )
 
-pricing_text = (
-    "ank: Nodes require server energy:\n"
-    "• Sandbox Dev Tier: $0.00 (Local Python engine)\n"
-    "• Cluster DevOps Tier: $15.00/mo (GKE Sandboxes, automated SOLO evaluation)\n\n"
-    "*** BETA ACCESS GRANTED ***\n"
-    "You have been automatically upgraded to the Cluster DevOps Tier.\n"
-    "No token required. All modules are unlocked."
-)
-
 docs_text = (
-    "ank: Academy architecture docs:\n"
-    "• Client: Python 3 standard curses interface\n"
-    "• Sandbox: gVisor container isolation engine\n"
-    "• Evaluation: SOLO Taxonomy semantic grader\n"
-    "Need further telemetry details?"
+    "ank: Academy docs:\n"
+    "• Client: Python 3 standard curses interface (no network, no sandbox)\n"
+    "• Commands are simulated, nothing runs on your machine\n"
+    "• Explanation gate: simple keyword check\n"
+    "• Shell commands: help, status, clear, exit, or a module number 1-5"
 )
 
 # ---------------------------------------------------------------------------
@@ -944,13 +820,7 @@ module_texts = {
 # Utility: Text Wrapper
 # ---------------------------------------------------------------------------
 def wrap_text(text: str, width: int) -> list[str]:
-    """
-    Wraps `text` to `width` columns.
-    FIX: paragraph spacing previously used object-identity comparison
-         (`line != mentor_visible_lines[-1]`), which silently broke when
-         two identical strings existed in the list. Now uses enumerate()
-         and index comparison, which is semantically correct.
-    """
+    """Wraps `text` to `width` columns, keeping blank lines between paragraphs."""
     paragraphs = text.split("\n")
     result: list[str] = []
     for p_idx, paragraph in enumerate(paragraphs):
@@ -1002,6 +872,21 @@ def init_colors():
 
 
 # ---------------------------------------------------------------------------
+# Module Activation (shared by the shell and the Curriculum menu)
+# ---------------------------------------------------------------------------
+def activate_module(module_key: str):
+    """Activate a curriculum module and refresh the menu if it is showing modules."""
+    global menu_options
+    mentor_renderer.set_text(curriculum_engine.activate_module(module_key))
+    terminal_logs.append(
+        f"[SYSTEM] Lab initialized: Module {module_key} - "
+        f"{curriculum_engine.modules[module_key]['title']}"
+    )
+    if menu_state == "CURRICULUM":
+        menu_options = curriculum_engine.render_modules_list() + ["<- Back to Main Menu"]
+
+
+# ---------------------------------------------------------------------------
 # Command Processor
 # ---------------------------------------------------------------------------
 def process_command(cmd: str) -> bool:
@@ -1009,13 +894,13 @@ def process_command(cmd: str) -> bool:
     Process a typed command.
     Returns False to signal a clean exit, True to continue the session.
 
-    Cheat detection pipeline (layered):
-      0. SoloEvaluationGate explanation branch — if gate is ARMED, score
-         the submitted text as an explanation, not as a command.
-      1. SocraticMentor.intercept_cheat()  — pattern-match layer
-      2. RuleEnforcementEngine.evaluate_input() — secondary payload scan
-      3. SoloEvaluationGate command classifier — arm gate on destructive cmds
-      4. EBPFSecurityInterceptor.process_buffer() — credential masking
+    Order of checks:
+      1. exit / quit  — always works, even while the gate is armed
+      2. SocraticMentor.intercept_cheat() — always runs, even while armed
+      3. SoloEvaluationGate explanation branch — if the gate is ARMED, score
+         the submitted text as an explanation, not as a command
+      4. SoloEvaluationGate command classifier — arm gate on destructive cmds
+      5. Built-in commands and module numbers
     """
     global warning_state
 
@@ -1026,8 +911,22 @@ def process_command(cmd: str) -> bool:
     keystroke_analyzer.register_command()
     cmd_lower = cmd_clean.lower()
 
-    # --- Layer 0: SOLO Explanation Gate — active branch ---
-    # If the gate is ARMED, treat this submission as an explanation attempt.
+    # --- 1. Exit ---
+    if cmd_lower in ("exit", "quit"):
+        terminal_logs.append(f"academy-shell$ {cmd_clean}")
+        terminal_logs.append("[SYSTEM] Session terminating...")
+        return False
+
+    # --- 2. Cheat patterns ---
+    mentor_interception = mentor.intercept_cheat(cmd_lower)
+    if mentor_interception:
+        warning_state = True
+        terminal_logs.append(f"academy-shell$ {cmd_clean}")
+        terminal_logs.append("[SECURITY] Forbidden bypass signature detected.")
+        mentor_renderer.set_text(mentor_interception)
+        return True
+
+    # --- 3. SOLO Explanation Gate — active branch ---
     # The original command is NOT re-echoed to terminal_logs here.
     if solo_gate.active:
         solo_gate.attempts += 1
@@ -1042,16 +941,11 @@ def process_command(cmd: str) -> bool:
             solo_gate.reset()
             warning_state = False
             mentor_renderer.set_text(result["feedback"])
-            # Forward the cleared command back through processing (now gate is IDLE)
-            # Strip the echo that would double-log; add it here once.
-            terminal_logs.append(f"academy-shell$ {cleared_cmd}")
-            terminal_logs.append(f"[SYSTEM] Executing: {cleared_cmd}")
-            
-            # --- Curriculum Engine Progression ---
+            terminal_logs.append(f"[SYSTEM] Simulated: {cleared_cmd} (nothing runs on your machine)")
+
             prog_text = curriculum_engine.evaluate_command(cleared_cmd.lower())
             if prog_text:
                 mentor_renderer.set_text(prog_text)
-                
             return True
 
         elif solo_gate.attempts >= solo_gate.MAX_ATTEMPTS:
@@ -1077,41 +971,9 @@ def process_command(cmd: str) -> bool:
         return True
 
     # Gate is IDLE — normal command processing below.
-    terminal_logs.append(f"academy-shell$ {cmd}")
+    terminal_logs.append(f"academy-shell$ {cmd_clean}")
 
-    # --- Layer 1: SocraticMentor pattern intercept ---
-    mentor_interception = mentor.intercept_cheat(cmd_lower)
-    if mentor_interception:
-        warning_state = True
-        terminal_logs.append("[SECURITY] TRACE INTERCEPTED // SECURITY ALARM ACTIVATED")
-        terminal_logs.append("[SECURITY] Forbidden signature detected by Socratic gate.")
-        mentor_renderer.set_text(mentor_interception)
-        return True
-
-    # --- Layer 2: Rule Enforcement Engine ---
-    result = rule_engine.evaluate_input(cmd_lower)
-    if result["intercepted"]:
-        warning_state = True
-        terminal_logs.append("[SECURITY] TRACE INTERCEPTED // SECURITY ALARM ACTIVATED")
-        terminal_logs.append("[SECURITY] Forbidden signature or bypass attempt blocked.")
-        mentor_renderer.set_text(result["response"])
-        return True
-
-    # --- Layer 3: eBPF credential masking ---
-    masked_cmd = ebpf_interceptor.process_buffer(cmd_lower)
-    if ebpf_interceptor.echo_state == "BLIND":
-        warning_state = True
-        sanitized = presidio_scrubber.sanitize_logs(masked_cmd)
-        terminal_logs.append(f"[SECURITY] eBPF MASKED: {masked_cmd}")
-        terminal_logs.append(f"[SECURITY] Telemetry: {sanitized}")
-        mentor_renderer.set_text(
-            "ank: [EBPF SHIELD ACTIVE]\n\n"
-            "eBPF uprobe attached to libc.so.6 (tcsetattr handler) intercepted raw buffer.\n\n"
-            "Plain-text logs scrubbed via local Microsoft Presidio sidecar policy."
-        )
-        return True
-
-    # --- Layer 3: SOLO Evaluation Gate — arm on destructive commands ---
+    # --- 4. SOLO Evaluation Gate — arm on destructive commands ---
     category = solo_gate.classify_command(cmd_lower)
     if category:
         solo_gate.active      = True
@@ -1126,37 +988,17 @@ def process_command(cmd: str) -> bool:
         mentor_renderer.set_text(solo_gate.gate_prompt())
         return True
 
-    # --- Layer 4: eBPF credential masking ---
-    masked_cmd = ebpf_interceptor.process_buffer(cmd_lower)
-    if ebpf_interceptor.echo_state == "BLIND":
-        warning_state = True
-        sanitized = presidio_scrubber.sanitize_logs(masked_cmd)
-        terminal_logs.append(f"[SECURITY] eBPF MASKED: {masked_cmd}")
-        terminal_logs.append(f"[SECURITY] Telemetry: {sanitized}")
-        mentor_renderer.set_text(
-            "ank: [EBPF SHIELD ACTIVE]\n\n"
-            "eBPF uprobe attached to libc.so.6 (tcsetattr handler) intercepted raw buffer.\n\n"
-            "Plain-text logs scrubbed via local Microsoft Presidio sidecar policy."
-        )
-        return True
-
-    # --- All clear ---
+    # --- 5. Built-in commands ---
     warning_state = False
 
     if cmd_lower == "help":
-        terminal_logs.append("[SYSTEM] Commands: 'help', 'status', 'clear', 'exit'")
+        terminal_logs.append(
+            "[SYSTEM] Commands: 'help', 'status', 'clear', 'exit', or a module number 1-5"
+        )
 
     elif cmd_lower == "status":
-        terminal_logs.append("[SYSTEM] NODE: ONLINE | ISOLATION: ACTIVE (gVisor)")
-        starter = tier_matrix.tiers["socratic_starter"]
-        pro     = tier_matrix.tiers["devops_professional"]
-        terminal_logs.append(
-            f"[SYSTEM] Starter Tier:     {starter['cpu_limit']} CPU / {starter['ram_limit']} RAM"
-        )
-        terminal_logs.append(
-            f"[SYSTEM] DevOps Pro Tier:  {pro['cpu_limit']} CPU / {pro['ram_limit']} RAM"
-        )
-        # Surface keystroke telemetry (NEW)
+        active = curriculum_engine.active_module or "none"
+        terminal_logs.append(f"[SYSTEM] Active module: {active}")
         stats = keystroke_analyzer.session_stats()
         terminal_logs.append(
             f"[TELEMETRY] Session: {stats['chars_typed']} chars | "
@@ -1164,23 +1006,19 @@ def process_command(cmd: str) -> bool:
             f"~{stats['approx_wpm']} WPM | "
             f"{stats['paste_blocks']} paste blocks"
         )
-        mentor_renderer.set_text(
-            "ank: System verified. Keystroke telemetry logged.\n\n"
-            "Have you reviewed your bind mount isolation settings yet?"
-        )
+        mentor_renderer.set_text("ank: Session stats logged. Keep typing, keep learning.")
 
     elif cmd_lower == "clear":
         terminal_logs.clear()
         terminal_logs.append("[SYSTEM] Terminal log cleared.")
 
-    elif cmd_lower == "exit":
-        terminal_logs.append("[SYSTEM] Session terminating...")
-        return False
+    elif cmd_lower in curriculum_engine.modules:
+        activate_module(cmd_lower)
+        return True
 
     else:
-        terminal_logs.append(f"[SYSTEM] Command '{cmd}' not found. Try 'help'.")
+        terminal_logs.append(f"[SYSTEM] Command '{cmd_clean}' not found. Try 'help'.")
 
-    # --- Curriculum Engine Progression ---
     prog_text = curriculum_engine.evaluate_command(cmd_lower)
     if prog_text:
         mentor_renderer.set_text(prog_text)
@@ -1207,40 +1045,25 @@ def trigger_menu_choice(idx: int) -> bool:
             terminal_logs.append("[SYSTEM] Entering Curriculum selection menu.")
             return False   # stay in MENU to browse modules
         elif idx == 1:
-            mentor_renderer.set_text(pricing_text)
-            terminal_logs.append("[SYSTEM] Requesting Pricing telemetry logs...")
-            return True
-        elif idx == 2:
             mentor_renderer.set_text(docs_text)
-            terminal_logs.append("[SYSTEM] Accessing System documentation database...")
+            terminal_logs.append("[SYSTEM] Showing System Docs.")
             return True
 
     elif menu_state == "CURRICULUM":
         back_idx = len(menu_options) - 1
         if idx == back_idx:
             menu_state        = "MAIN"
-            menu_options      = [
-                "1. Course Curriculum",
-                "2. Tariffs & Pricing",
-                "3. System Docs",
-            ]
+            menu_options      = list(MAIN_MENU_OPTIONS)
             selected_menu_idx = 0
             mentor_renderer.set_text(
-                "ank: Telemetry established. Navigate option panels or type commands in shell."
+                "ank: Navigate the menu or type commands in the shell."
             )
             terminal_logs.append("[SYSTEM] Returning to Main Menu.")
             return False
         else:
             module_key = str(idx + 1)
-            if module_key in module_texts:
-                mentor_text = curriculum_engine.activate_module(module_key)
-                mentor_renderer.set_text(mentor_text)
-                terminal_logs.append(
-                    f"[SYSTEM] Lab initialized: Module {module_key} - "
-                    f"{curriculum_engine.modules[module_key]['title']}"
-                )
-                # Rebuild menu options to reflect potential IN_PROGRESS status
-                menu_options = curriculum_engine.render_modules_list() + ["<- Back to Main Menu"]
+            if module_key in curriculum_engine.modules:
+                activate_module(module_key)
             return True
 
     return True
@@ -1251,157 +1074,6 @@ def set_cursor_visibility(visible):
         curses.curs_set(1 if visible else 0)
     except Exception:
         pass
-
-def run_login_gate(stdscr):
-    set_cursor_visibility(True)
-    stdscr.nodelay(False)
-    stdscr.keypad(True)
-    
-    token_buffer = []
-    error_msg = ""
-    
-    while True:
-        stdscr.clear()
-        h, w = stdscr.getmaxyx()
-        
-        # Guard minimum terminal size
-        if h < 24 or w < 90:
-            try:
-                stdscr.attron(curses.color_pair(COLOR_ALERT) | curses.A_BOLD)
-                stdscr.addstr(h//2, max(0, (w - 38)//2), "PLEASE RESIZE TERMINAL TO AT LEAST 90x24")
-                stdscr.attroff(curses.color_pair(COLOR_ALERT) | curses.A_BOLD)
-            except Exception:
-                pass
-            stdscr.refresh()
-            time.sleep(0.1)
-            try:
-                ch = stdscr.getch()
-            except Exception:
-                continue
-            if ch == ord('q'):
-                sys.exit(0)
-            continue
-            
-        # Draw a centered login box
-        box_h, box_w = 10, 60
-        start_y = (h - box_h) // 2
-        start_x = (w - box_w) // 2
-        
-        # Draw borders
-        border_color = curses.color_pair(COLOR_CYAN)
-        try:
-            stdscr.attron(border_color)
-            stdscr.addstr(start_y, start_x, "┌" + "─" * (box_w - 2) + "┐")
-            for y in range(start_y + 1, start_y + box_h - 1):
-                stdscr.addstr(y, start_x, "│" + " " * (box_w - 2) + "│")
-            stdscr.addstr(start_y + box_h - 1, start_x, "└" + "─" * (box_w - 2) + "┘")
-            stdscr.attroff(border_color)
-        except Exception:
-            pass
-            
-        # Draw Title
-        title = " TERMINAL ACADEMY LOGIN "
-        try:
-            stdscr.attron(curses.color_pair(COLOR_GREEN) | curses.A_BOLD)
-            stdscr.addstr(start_y, start_x + (box_w - len(title)) // 2, title)
-            stdscr.attroff(curses.color_pair(COLOR_GREEN) | curses.A_BOLD)
-        except Exception:
-            pass
-            
-        # Prompts
-        prompt1 = "Please enter your Callsign (Username):"
-        prompt2 = "[Press ENTER to submit | ESC or Ctrl+C to exit]"
-        
-        try:
-            stdscr.attron(curses.color_pair(COLOR_DEFAULT))
-            stdscr.addstr(start_y + 2, start_x + (box_w - len(prompt1)) // 2, prompt1)
-            stdscr.attroff(curses.color_pair(COLOR_DEFAULT))
-            
-            stdscr.attron(curses.color_pair(COLOR_CYAN))
-            stdscr.addstr(start_y + 8, start_x + (box_w - len(prompt2)) // 2, prompt2)
-            stdscr.attroff(curses.color_pair(COLOR_CYAN))
-        except Exception:
-            pass
-            
-        # Draw input field border or brackets
-        token_label = "Callsign: "
-        field_width = 40
-        field_start_x = start_x + (box_w - (len(token_label) + field_width + 2)) // 2
-        field_y = start_y + 4
-        
-        try:
-            stdscr.attron(curses.color_pair(COLOR_DEFAULT))
-            stdscr.addstr(field_y, field_start_x, token_label + "[")
-            stdscr.addstr(field_y, field_start_x + len(token_label) + 1 + field_width, "]")
-            stdscr.attroff(curses.color_pair(COLOR_DEFAULT))
-        except Exception:
-            pass
-            
-        # Draw input
-        input_str = "".join(token_buffer)
-        visible_input = input_str[-field_width:]
-        try:
-            stdscr.attron(curses.color_pair(COLOR_GREEN) | curses.A_BOLD)
-            stdscr.addstr(field_y, field_start_x + len(token_label) + 1, visible_input)
-            stdscr.attroff(curses.color_pair(COLOR_GREEN) | curses.A_BOLD)
-        except Exception:
-            pass
-            
-        # Draw error message if any
-        if error_msg:
-            err_visible = error_msg[:box_w - 6]
-            try:
-                stdscr.attron(curses.color_pair(COLOR_ALERT) | curses.A_BOLD)
-                stdscr.addstr(start_y + 6, start_x + (box_w - len(err_visible)) // 2, err_visible)
-                stdscr.attroff(curses.color_pair(COLOR_ALERT) | curses.A_BOLD)
-            except Exception:
-                pass
-                
-        # Move cursor to the end of input
-        cursor_x = field_start_x + len(token_label) + 1 + min(len(token_buffer), field_width)
-        try:
-            stdscr.move(field_y, cursor_x)
-        except Exception:
-            pass
-        stdscr.refresh()
-        
-        # Get character input (blocking)
-        try:
-            ch = stdscr.getch()
-        except KeyboardInterrupt:
-            sys.exit(0)
-            
-        if ch == 27: # ESC key
-            sys.exit(0)
-        elif ch in (10, 13, curses.KEY_ENTER):
-            token = "".join(token_buffer).strip()
-            if not token:
-                error_msg = "Callsign cannot be empty"
-                continue
-                
-            # Show "Initializing..." status
-            auth_status = "Initializing Session..."
-            try:
-                stdscr.attron(curses.color_pair(COLOR_CYAN))
-                stdscr.addstr(start_y + 6, start_x + 2, " " * (box_w - 4))
-                stdscr.addstr(start_y + 6, start_x + (box_w - len(auth_status)) // 2, auth_status)
-                stdscr.attroff(curses.color_pair(COLOR_CYAN))
-            except Exception:
-                pass
-            stdscr.refresh()
-            time.sleep(0.3)
-            
-            # Beta version bypass: assign devops_professional tier automatically
-            session = {"authenticated": True, "tier": "devops_professional", "username": token}
-            set_cursor_visibility(False)
-            stdscr.nodelay(True)
-            return session
-        elif ch in (curses.KEY_BACKSPACE, 127, 8):
-            if token_buffer:
-                token_buffer.pop()
-        elif 32 <= ch <= 126:
-            if len(token_buffer) < 100:
-                token_buffer.append(chr(ch))
 
 def show_splash_screen(stdscr):
     stdscr.clear()
@@ -1472,18 +1144,12 @@ def draw_glass_box(win, color_pair, title):
 # Main curses Entry Point
 # ---------------------------------------------------------------------------
 def main(stdscr):
-    global focus_mode, selected_menu_idx, warning_state, user_tier
+    global focus_mode, selected_menu_idx, warning_state
 
     init_colors()
     show_splash_screen(stdscr)
-    
-    # Beta bypass: completely skip the login screen
-    # session = run_login_gate(stdscr)
-    session = {"authenticated": True, "tier": "devops_professional", "username": "beta_tester"}
     set_cursor_visibility(False)
-    
-    user_tier = session.get("tier", "devops_professional")
-    
+
     stdscr.nodelay(True)
     stdscr.keypad(True)
 
@@ -1497,8 +1163,6 @@ def main(stdscr):
     # ---------------------------------------------------------------------------
     # Window handles — created outside the draw loop and recreated only when
     # terminal dimensions change or KEY_RESIZE fires.
-    # FIX: previously derwin() was called on every frame iteration, causing
-    # flicker, memory churn, and crash risk during rapid resizes.
     # ---------------------------------------------------------------------------
     prev_h, prev_w = 0, 0
     win_work      = None
@@ -1530,7 +1194,6 @@ def main(stdscr):
         if h < 24 or w < 90:
             stdscr.clear()
             msg = "PLEASE RESIZE TERMINAL TO AT LEAST 90x24"
-            # FIX: clamp x position so addstr never writes past right edge
             safe_x = max(0, min((w - len(msg)) // 2, w - len(msg) - 1))
             safe_y = h // 2
             if 0 <= safe_y < h and safe_x >= 0:
@@ -1555,9 +1218,6 @@ def main(stdscr):
 
         # --- Advance mentor streaming animation ---
         mentor_renderer.tick()
-
-        # --- Dynamic border color ---
-        ank_border_color = COLOR_ALERT if warning_state else COLOR_CYAN
 
         # -----------------------------------------------------------------------
         # Render: Left Pane — Work Terminal
@@ -1631,11 +1291,9 @@ def main(stdscr):
         # Live telemetry text
         telem_y = animation_y + 2
         stats = keystroke_analyzer.session_stats()
-        tier_info = tier_matrix.enforce_tier_constraints(user_tier)
         telem_lines = [
-            f"CPU/RAM: {tier_info['cpu_limit']} / {tier_info['ram_limit']}",
-            f"eBPF Shield: {'ACTIVE (Masking)' if ebpf_interceptor.echo_state == 'BLIND' else 'STANDBY'}",
-            f"WPM: ~{stats['approx_wpm']} | Paste: {stats['paste_blocks']}"
+            f"Active module: {curriculum_engine.active_module or 'none'}",
+            f"WPM: ~{stats['approx_wpm']} | Paste: {stats['paste_blocks']}",
         ]
         for idx, line in enumerate(telem_lines):
             if telem_y + idx >= options_start_y - 1:
@@ -1688,7 +1346,6 @@ def main(stdscr):
             win_prompt.addstr(0, len(prompt_prefix), input_str[: w_work - len(prompt_prefix) - 2])
             win_prompt.attroff(curses.color_pair(COLOR_DEFAULT))
 
-            # FIX: clamp cursor column so move() never throws curses.error
             cursor_col = min(
                 len(prompt_prefix) + len(input_buffer),
                 w_work - 2
@@ -1715,7 +1372,7 @@ def main(stdscr):
         # -----------------------------------------------------------------------
         try:
             ch = stdscr.getch()
-        except curses.error:   # FIX: was bare `except Exception` — masked all crashes
+        except curses.error:
             continue
 
         if ch == -1:
@@ -1725,8 +1382,14 @@ def main(stdscr):
         # Terminal resize event
         if ch == curses.KEY_RESIZE:
             stdscr.clear()
-            w_work, w_ank, h_panes = rebuild_windows(h, w)
-            prev_h, prev_w = h, w
+            # Re-read the size: h/w from the top of the loop may be stale.
+            curses.update_lines_cols()
+            h, w = stdscr.getmaxyx()
+            if h >= 24 and w >= 90:
+                w_work, w_right, h_panes, h_mentor, h_telem = rebuild_windows(h, w)
+                prev_h, prev_w = h, w
+            else:
+                prev_h, prev_w = 0, 0   # force a rebuild once the terminal is big enough
             continue
 
         # Tab: toggle focus pane
@@ -1741,9 +1404,7 @@ def main(stdscr):
             now = time.time()
 
             if 32 <= ch <= 126:
-                # Run through KeystrokeAnalyzer burst-window detector
-                # FIX: replaced naive `time_delta < 0.008` single-delta check
-                #      with burst-window analysis (>= 3 keys within 4 ms)
+                # Burst-window paste detector (>= 3 keys within 4 ms)
                 if keystroke_analyzer.record_key(now):
                     curses.flushinp()
                     warning_state = True

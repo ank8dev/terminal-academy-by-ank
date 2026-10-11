@@ -62,7 +62,6 @@ The skill tree is divided into modules spanning Linux essentials through advance
    ```bash
    npm run dev
    ```
-   *(Note: You can also use the helper script `./start.sh` in the root workspace to auto-resolve active process locks and bootstrap Tauri.)*
 
 ### Prerequisites
 * **Node.js** (v18+)
