@@ -10,7 +10,7 @@ import { listen } from '@tauri-apps/api/event';
 import './App.css';
 
 // --- Localization dictionary for EN/RU toggle --- //
-const t: { [key: string]: { [key: string]: string } } = {
+export const t: { [key: string]: { [key: string]: string } } = {
   en: {
     hudTitle: "TERMINAL / ACADEMIA PERSONAL HEAD",
     hudBranch: "ACTIVE BRANCH:",
@@ -73,7 +73,7 @@ interface SyllabusNode {
   incidents: Incident[];
 }
 
-function parseSyllabus(md: string): SyllabusNode[] {
+export function parseSyllabus(md: string): SyllabusNode[] {
   const nodes: SyllabusNode[] = [];
   const sections = md.split(/## Node\s+/);
   
@@ -143,7 +143,7 @@ function parseSyllabus(md: string): SyllabusNode[] {
 }
 
 // --- UI Widgets --- //
-const TerminalWidget = ({ bindDrag, lang, onTerminalData, dockerStatus, onCommandBeforeExec, onCommandAfterExec, jwtToken, blacklist = [] }: any) => {
+export const TerminalWidget = ({ bindDrag, lang, onTerminalData, dockerStatus, onCommandBeforeExec, onCommandAfterExec, jwtToken, blacklist = [] }: any) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const termInstanceRef = useRef<XTerm | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -367,7 +367,7 @@ const TerminalWidget = ({ bindDrag, lang, onTerminalData, dockerStatus, onComman
   );
 };
 
-const ChatWidget = ({ bindDrag, activeCourse, activeNode, activeIncident, lang, terminalBuffer, systemStats, explainCommand, setExplainCommand, terminalEvent, setTerminalEvent, defaultApiKey, blacklist = [] }: any) => {
+export const ChatWidget = ({ bindDrag, activeCourse, activeNode, activeIncident, lang, terminalBuffer, systemStats, explainCommand, setExplainCommand, terminalEvent, setTerminalEvent, defaultApiKey, blacklist = [] }: any) => {
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([{ role: 'ank', text: t[lang].chatWelcome }]);
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(false);
@@ -831,7 +831,7 @@ CRITICAL RULES:
   );
 };
 
-const LibraryWidget = ({ bindDrag, activeIncident, lang, onExplainCommand }: any) => {
+export const LibraryWidget = ({ bindDrag, activeIncident, lang, onExplainCommand }: any) => {
   const [commands, setCommands] = useState<string[]>(['docker-compose up -d', 'tail -f logs/latest.log', 'chmod +x start.sh']);
 
   useEffect(() => {
@@ -892,7 +892,7 @@ const LibraryWidget = ({ bindDrag, activeIncident, lang, onExplainCommand }: any
   );
 };
 
-const MonitoringWidget = ({ bindDrag, lang, stats }: any) => {
+export const MonitoringWidget = ({ bindDrag, lang, stats }: any) => {
   if (!stats) return null;
 
   return (
@@ -975,7 +975,7 @@ const MonitoringWidget = ({ bindDrag, lang, stats }: any) => {
   );
 };
 
-const LessonWidget = ({ 
+export const LessonWidget = ({ 
   bindDrag, 
   courses, 
   activeCourse, 

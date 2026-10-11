@@ -28,3 +28,7 @@ terminal_demo.tape
 infra/
 .agents/
 
+
+# Local research clones & browser profiles (not part of the project)
+research_repos/
+chrome-profile/
