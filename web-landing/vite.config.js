@@ -10,6 +10,10 @@ export default defineConfig({
   base: './',
   plugins: [react()],
   resolve: {
+    // Shared desktop code (~/App) must use this package's node_modules, not
+    // terminal-academy-desktop/node_modules: otherwise a clean checkout fails to
+    // resolve and a local one bundles a second copy of React.
+    dedupe: ['react', 'react-dom', 'framer-motion', '@use-gesture/react', 'lucide-react', 'xterm', '@xterm/addon-fit'],
     alias: {
       '@': path.resolve(__dirname, './src'),
       '~': path.resolve(__dirname, '../terminal-academy-desktop/src'),

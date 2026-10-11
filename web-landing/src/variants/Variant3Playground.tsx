@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { BookOpen, CheckCircle, Lightbulb, Terminal, Download, Github, ChevronDown, ChevronRight, HelpCircle, Shield, ArrowRight, Zap, Star } from 'lucide-react';
+import { BookOpen, CheckCircle, Lightbulb, Terminal, Download, Github, ChevronDown, ChevronRight, Zap, Star } from 'lucide-react';
 import { TerminalWidget, ChatWidget, parseSyllabus } from '~/App';
 import '~/App.css';
 

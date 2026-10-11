@@ -1,4 +1,3 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { MotionProvider } from '@/providers/MotionProvider';
 import { ScrollCanvas } from '@/components/ScrollCanvas';

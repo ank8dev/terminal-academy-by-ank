@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Terminal, Monitor, Bot, BookOpen, Download, Github, Activity, Shield, Cpu, Code, CheckCircle, HelpCircle } from 'lucide-react';
+import { Terminal, Monitor, Bot, BookOpen, Download, Github, Activity, Shield, Code, CheckCircle } from 'lucide-react';
 import { TerminalWidget, ChatWidget, LessonWidget, MonitoringWidget, parseSyllabus } from '~/App';
 import '~/App.css';
 

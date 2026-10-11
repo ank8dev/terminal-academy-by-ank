@@ -1,8 +1,7 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { MotionProvider } from '@/providers/MotionProvider';
 import { ScrollCanvas } from '@/components/ScrollCanvas';
-import { Terminal, LayoutGrid, Layers, BookOpen, Network, Box } from 'lucide-react';
+import { Terminal, LayoutGrid, BookOpen, Network, Box } from 'lucide-react';
 import './index.css';
 
 function ProtoHub() {

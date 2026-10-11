@@ -12,7 +12,6 @@ export const triggerPtyData = (payload: string) => {
 
 // Simulated State for the Terminal
 let configPermissions = '-rwxrwxrwx';
-let isSshConnected = false;
 
 // Command Processor
 const executeCommand = (command: string) => {
@@ -66,7 +65,6 @@ const executeCommand = (command: string) => {
 
   if (cleanCmd.startsWith('ssh ')) {
     if (cleanCmd.includes('-L') && cleanCmd.includes('8080') && cleanCmd.includes('80')) {
-      isSshConnected = true;
       triggerPtyData(`\r\nssh: Connecting to sandbox [localhost:80]...\r\nstudent@sandbox password: **********\r\n\x1b[32m✓ SSH tunnel established successfully: local port 8080 forwarded.\x1b[0m\r\nstudent@sandbox:~$ `);
       return;
     }
@@ -98,7 +96,7 @@ const executeCommand = (command: string) => {
   triggerPtyData(`\r\nAnk: "Hmm, '${cleanCmd}' is not the focus here. Look at your objectives and the advice bubble."\r\nstudent@sandbox:~$ `);
 };
 
-export const invoke = async (cmd: string, args?: any): Promise<any> => {
+const mockInvoke = async (cmd: string, args?: any): Promise<any> => {
   console.log(`[Tauri Mock] invoke: ${cmd}`, args);
 
   if (cmd === 'spawn_pty') {
@@ -147,7 +145,6 @@ export const invoke = async (cmd: string, args?: any): Promise<any> => {
 
   if (cmd === 'reset_sandbox') {
     configPermissions = '-rwxrwxrwx';
-    isSshConnected = false;
     setTimeout(() => {
       triggerPtyData('\r\n\x1b[33m[SYSTEM] Recycling container sandbox...\x1b[0m\r\n\x1b[32m[SYSTEM] Sandbox successfully recycled!\x1b[0m\r\nstudent@sandbox:~$ ');
     }, 200);
@@ -156,6 +153,9 @@ export const invoke = async (cmd: string, args?: any): Promise<any> => {
 
   return Promise.reject(new Error(`Unknown mock tauri backend command: ${cmd}`));
 };
+
+// Same generic signature as @tauri-apps/api/core, so shared desktop code type-checks.
+export const invoke = mockInvoke as <T = any>(cmd: string, args?: any) => Promise<T>;
 
 export const listen = async (event: string, handler: Function): Promise<any> => {
   console.log(`[Tauri Mock] listen: ${event}`);

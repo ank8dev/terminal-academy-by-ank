@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Terminal, Download, Github, Shield, Network, Activity, Server, Cpu, CpuIcon, Layers, ChevronRight } from 'lucide-react';
+import { Terminal, Download, Github, Shield, Network, Activity, Server, ChevronRight } from 'lucide-react';
 import { MonitoringWidget } from '~/App';
 import { useMotion } from '@/providers/MotionProvider';
 import '~/App.css';

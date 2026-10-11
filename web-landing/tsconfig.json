@@ -24,7 +24,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "~/*": ["../terminal-academy-desktop/src/*"]
+      "~/*": ["../terminal-academy-desktop/src/*"],
+      "@tauri-apps/api/core": ["./src/mockTauri.ts"],
+      "@tauri-apps/api/event": ["./src/mockTauri.ts"],
+      "*": ["./node_modules/@types/*", "./node_modules/*"]
     }
   },
   "include": ["src", "../terminal-academy-desktop/src"]
