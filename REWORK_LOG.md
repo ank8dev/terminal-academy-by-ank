@@ -97,3 +97,32 @@ lesson idea) and a PR template in `.github/`.
 (`terminal_academy/`, `./academy`, `tests/`), which is built in wave 2.
 The issue forms use a `lesson` label — it may need to be created on GitHub.
 
+---
+
+## Wave 2 (stages 5–8, one after another)
+
+### Stage 5 — Cleanup (based on `AUDIT.md`)
+
+**What was done**
+- Deleted files nobody used: `docker-compose.yaml`, `cli-client/Dockerfile.sandbox`,
+  `cli-client/auth.py`.
+- Removed fake code from the old CLI: fake "eBPF" and "Presidio" classes,
+  pricing tiers, the disabled login screen, a duplicate copy of the
+  cheat-word list, fake status lines ("gVisor active").
+- Fixed real bugs: crash on window resize; Python 3.9 support; `exit` did
+  not work while the "explanation gate" was waiting; typing a module number
+  did nothing although the text said it should.
+- Cleaned `.gitignore`. Important: it ignored **all `*.txt` files**, which
+  would have hidden lesson files later.
+
+**Decisions**
+- The desktop app was **not** touched here (that is stage 6), as planned.
+- I did **not** redesign the old CLI, because stage 6 replaces it. Cleanup
+  first, then replace, gives two small, readable steps in git history
+  instead of one huge one.
+
+**Concept to understand — "dead code":** code that is never run or whose
+result is never used. It is not harmless: people read it, believe it, and
+waste time on it. Git keeps the history, so deleting is safe — you can
+always find old code with `git log`.
+
