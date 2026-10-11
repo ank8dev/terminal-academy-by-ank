@@ -30,7 +30,9 @@ hands-on lessons. Details and reasons: `REWORK_LOG.md`.
 - Test suite (`unittest`, 159 tests) including a self-test that solves every
   lesson step; GitHub Actions CI on Ubuntu and macOS (Python 3.9 and 3.13,
   plus Apple's system Python).
-- Three static landing page variants in `site/` and a GitHub Pages workflow.
+- Brand identity (t//a logo, colors, fonts, favicons, app icons, brand guide)
+  and a static landing page in `site/` with a GitHub Pages workflow.
+- Branded CLI: big gradient logo, short boot animation, welcome screen.
 - Open-source files: MIT `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`,
   `SECURITY.md`, issue forms and a PR template.
 - Project documents: `AUDIT.md`, `LESSONS_PLAN.md`, `REWORK_LOG.md`,

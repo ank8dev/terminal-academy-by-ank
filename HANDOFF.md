@@ -63,7 +63,7 @@ terminal_academy/
   ui.py                 colors, text wrapping, logo, Ank's messages
   lessons/*.json        the 15 lessons (data, no code)
 tests/                  unittest suite (one file per module + lesson self-test)
-site/                   static landing pages v1/v2/v3 + chooser (GitHub Pages)
+site/                   landing page + brand guide (site/brand/) + icons (GitHub Pages)
 ```
 
 **The flow of one command** (the heart of the app):
@@ -96,7 +96,6 @@ site/                   static landing pages v1/v2/v3 + chooser (GitHub Pages)
 | Russian / other languages | English first. The old `translation_ru.json` was dropped with the desktop app. Needs an i18n design (see ROADMAP). |
 | pip / Homebrew package | `git clone` + `./academy` is enough for v1.0.0. |
 | Keeping the desktop app | Security problems and a fake sandbox (see `AUDIT.md` §5). Useful ideas were ported. |
-| Choosing one landing page | Three variants exist in `site/`; the owner should pick one. |
 | `jobs`/`fg` across lines | Each command is a new bash process, so jobs only exist within one line. Explained in lesson 10. |
 
 ## 5. Known problems
@@ -141,9 +140,10 @@ site/                   static landing pages v1/v2/v3 + chooser (GitHub Pages)
 2. **Test with a real person on a real Mac.** Give lessons 1–5 to one teen,
    watch silently, write down every place they get stuck. Fix texts/hints
    first — this is the cheapest, highest-value improvement.
-3. **Pick one landing page** from `site/v1|v2|v3`, move it to `site/index.html`
-   (replace the chooser), delete the others, enable GitHub Pages
-   (Settings → Pages → branch `gh-pages`).
+3. **Publish the landing page:** enable GitHub Pages (Settings → Pages →
+   branch `gh-pages`) after the first deploy. Then set `og:image` in
+   `site/index.html` to a full URL (social sites need it). If a logo SVG in
+   `site/brand/` changes, re-render the PNG/ICO icons (see `site/README.md`).
 4. **Fix the small engine issues** from "Known problems" 5–6 (hide
    `Terminated`, make `clear` safe without a terminal) — each is a small,
    well-tested change in `shell.py`.

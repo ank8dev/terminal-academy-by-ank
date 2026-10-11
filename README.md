@@ -215,7 +215,7 @@ using it. You use it **at your own risk**.
 | `terminal_academy/` | The app: a Python package, standard library only |
 | `terminal_academy/lessons/` | Lessons, one JSON file each |
 | `tests/` | Unit tests (`unittest`) |
-| `site/` | Static landing pages |
+| `site/` | Landing page, brand guide, logos and icons |
 | `LESSONS_PLAN.md` | The lesson format and the plan for all lessons |
 | `.github/workflows/` | CI (tests on Ubuntu and macOS) and the GitHub Pages deploy |
 
@@ -242,9 +242,10 @@ see [SECURITY.md](SECURITY.md).
 
 ## Landing page
 
-The `site/` folder has the project's landing page: plain HTML and CSS with no
-build step. `site/index.html` links to three design variants (`v1/`, `v2/`,
-`v3/`). It is published to GitHub Pages by `.github/workflows/pages.yml`
+The `site/` folder has the project's landing page (`site/index.html`), the
+brand guide (`site/brand/index.html`: logo, colors, fonts, tone of voice) and
+the icons (favicons, app icons, social preview image). Plain HTML and CSS,
+no build step. It is published to GitHub Pages by `.github/workflows/pages.yml`
 when `site/` changes on `main`. To preview it locally:
 
 ```sh

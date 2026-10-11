@@ -3,36 +3,277 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Terminal Academy — pick a landing page</title>
-  <meta name="color-scheme" content="light dark">
-  <style>
-    :root { --bg: #ffffff; --fg: #1d1f24; --muted: #5b6070; --card: #f4f5f8; --accent: #2f6fde; }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #14161b; --fg: #e8eaf0; --muted: #a0a6b5; --card: #1f2229; --accent: #7aa7ff; }
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--fg);
-           font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-    main { max-width: 44rem; margin: 0 auto; padding: 3rem 1rem; }
-    h1 { margin: 0 0 .5rem; font-size: 1.8rem; }
-    p { color: var(--muted); margin: 0 0 1.5rem; }
-    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
-    a { display: block; padding: 1rem 1.25rem; border-radius: .75rem; background: var(--card);
-        color: var(--fg); text-decoration: none; border: 2px solid transparent; }
-    a:hover, a:focus-visible { border-color: var(--accent); outline: none; }
-    strong { color: var(--accent); }
-    code { font-family: ui-monospace, Menlo, monospace; }
-  </style>
+  <title>Terminal Academy — learn the terminal by doing</title>
+  <meta name="description" content="Terminal Academy is a free, open-source course that teaches the command line in your own terminal: 15 hands-on lessons in 5 levels, real commands, a safe practice folder and instant feedback. For macOS and Linux.">
+  <meta name="theme-color" content="#1a1147">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Terminal Academy">
+  <meta property="og:title" content="Terminal Academy — learn the terminal by doing">
+  <meta property="og:description" content="Real commands. Safe practice folder. Instant feedback. A free, open-source terminal course for teens and beginners.">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Terminal Academy logo t//a with the tagline: Learn the terminal by doing.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main>
-    <h1><code>t//a</code> Terminal Academy</h1>
-    <p>Three designs for the same landing page. Pick one to look at.</p>
-    <ul>
-      <li><a href="v1/"><strong>v1</strong> · Retro terminal: dark, green, ASCII art</a></li>
-      <li><a href="v2/"><strong>v2</strong> · Clean and modern: light, with dark mode</a></li>
-      <li><a href="v3/"><strong>v3</strong> · Playful: lessons as game levels</a></li>
-    </ul>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Terminal Academy, back to top">
+        <img src="brand/logo-wordmark-dark.svg" alt="Terminal Academy" width="216" height="36">
+      </a>
+      <nav aria-label="Main">
+        <ul>
+          <li><a href="#course">Course</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#who">Who it's for</a></li>
+          <li><a href="#safety">Safety</a></li>
+          <li><a href="#source">Open source</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ hero ============ -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow-pill">Free &middot; Open source &middot; macOS &amp; Linux</p>
+          <h1 id="hero-title">Learn the <span class="hl">terminal</span><br> by doing.</h1>
+          <p class="lead">Real commands. Safe practice folder. Instant feedback.</p>
+          <p class="lead-sub">15 hands-on lessons, from your very first <code>pwd</code> to SSH keys and your own web server &mdash; right in your own terminal, with Ank as your mentor.</p>
+
+          <div class="install">
+            <p class="install-title">Install &amp; run</p>
+            <pre><code><span class="p" aria-hidden="true">$ </span>git clone https://github.com/ank8dev/terminal-academy-by-ank.git
+<span class="p" aria-hidden="true">$ </span>cd terminal-academy-by-ank
+<span class="p" aria-hidden="true">$ </span>./academy</code></pre>
+            <p class="req">Python 3.9+ &middot; no other dependencies &middot; no account</p>
+          </div>
+
+          <div class="actions">
+            <a class="btn btn-yellow" href="https://github.com/ank8dev/terminal-academy-by-ank">Get it on GitHub <span aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-ghost" href="#course">See the course</a>
+          </div>
+        </div>
+
+        <figure class="lesson-mock">
+          <figcaption class="mock-caption">What a lesson looks like</figcaption>
+          <div class="term" role="img" aria-label="Example terminal session: lesson 5, Finding Things. Ank asks you to find every TODO in a folder, you type grep -r TODO project, the app confirms the step, and explain grep shows a short note about the command.">
+            <div class="term-bar">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="term-title">Lesson 5 &middot; Finding Things</span>
+              <span class="term-step">step 4 / 6</span>
+            </div>
+            <div class="term-body" aria-hidden="true">
+              <p><b class="t-ank">Ank</b> Find every TODO inside the folder <b>project</b> and all its subfolders.</p>
+              <p><span class="t-prompt">sandbox $</span> grep -r TODO project</p>
+              <p class="t-out">project/app.py:# TODO add a menu</p>
+              <p class="t-out">project/docs/notes.md:TODO write the README</p>
+              <p class="t-ok">&#10003; Correct. grep -r searches a whole folder tree and shows the file name in front of each line.</p>
+              <p><span class="t-prompt">sandbox $</span> explain grep</p>
+              <p class="t-note"><b>grep</b> PATTERN FILE &mdash; print the lines that contain PATTERN<br>-i ignore case &middot; -n line numbers &middot; -r search folders</p>
+              <p><span class="t-prompt">sandbox $</span> <span class="t-cursor"></span></p>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ course ============ -->
+    <section id="course" class="course" aria-labelledby="course-title">
+      <div class="container">
+        <p class="eyebrow">// The course</p>
+        <h2 id="course-title">15 lessons, 5 levels</h2>
+        <p class="section-lead">Each level builds on the one before. Start at lesson 1 and work your way up to a small project of your own.</p>
+
+        <ol class="map">
+          <li class="lvl l1">
+            <span class="node" aria-hidden="true">1</span>
+            <div class="lvl-card">
+              <p class="lvl-label">Level 1</p>
+              <h3>Getting around</h3>
+              <ol class="lessons">
+                <li><span class="n">01</span> First Steps</li>
+                <li><span class="n">02</span> Moving Around</li>
+                <li><span class="n">03</span> Files and Folders</li>
+              </ol>
+            </div>
+          </li>
+          <li class="lvl l2">
+            <span class="node" aria-hidden="true">2</span>
+            <div class="lvl-card">
+              <p class="lvl-label">Level 2</p>
+              <h3>Working with text</h3>
+              <ol class="lessons">
+                <li><span class="n">04</span> Reading Files</li>
+                <li><span class="n">05</span> Finding Things</li>
+                <li><span class="n">06</span> Pipes and Redirection</li>
+              </ol>
+            </div>
+          </li>
+          <li class="lvl l3">
+            <span class="node" aria-hidden="true">3</span>
+            <div class="lvl-card">
+              <p class="lvl-label">Level 3</p>
+              <h3>Permissions and scripts</h3>
+              <ol class="lessons">
+                <li><span class="n">07</span> Who Can Do What?</li>
+                <li><span class="n">08</span> Your First Script</li>
+                <li><span class="n">09</span> Variables and PATH</li>
+              </ol>
+            </div>
+          </li>
+          <li class="lvl l4">
+            <span class="node" aria-hidden="true">4</span>
+            <div class="lvl-card">
+              <p class="lvl-label">Level 4</p>
+              <h3>Processes and networks</h3>
+              <ol class="lessons">
+                <li><span class="n">10</span> Processes</li>
+                <li><span class="n">11</span> Network Basics</li>
+                <li><span class="n">12</span> Your Own Web Server</li>
+              </ol>
+            </div>
+          </li>
+          <li class="lvl l5">
+            <span class="node" aria-hidden="true">5</span>
+            <div class="lvl-card">
+              <p class="lvl-label">Level 5</p>
+              <h3>SSH and your own project</h3>
+              <ol class="lessons">
+                <li><span class="n">13</span> SSH Keys</li>
+                <li><span class="n">14</span> SSH Config</li>
+                <li><span class="n">15</span> Mini Project: Fan Site</li>
+              </ol>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ how ============ -->
+    <section id="how" class="how" aria-labelledby="how-title">
+      <div class="container">
+        <p class="eyebrow">// How it works</p>
+        <h2 id="how-title">Three steps, all in your terminal</h2>
+        <ol class="steps">
+          <li class="step s1">
+            <span class="step-num">01</span>
+            <h3>Run it</h3>
+            <p>Clone the repository and start <code>./academy</code>. One command, nothing else to install.</p>
+          </li>
+          <li class="step s2">
+            <span class="step-num">02</span>
+            <h3>Practice for real</h3>
+            <p>Each lesson gives you a task. You type real commands inside your own practice folder, the sandbox.</p>
+          </li>
+          <li class="step s3">
+            <span class="step-num">03</span>
+            <h3>Get instant feedback</h3>
+            <p>The app checks every step, gives hints when you are stuck, and <code>explain&nbsp;&lt;command&gt;</code> shows short notes. Progress is saved on your computer.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ who ============ -->
+    <section id="who" class="who" aria-labelledby="who-title">
+      <div class="container">
+        <p class="eyebrow">// Who it's for</p>
+        <h2 id="who-title">Made for people starting out</h2>
+        <div class="who-grid">
+          <article class="who-card w1">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 40 40" width="40" height="40"><path d="M9 13l8 7-8 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/><path d="M21 28h10" stroke="currentColor" stroke-width="4"/></svg>
+            </span>
+            <h3>Teens, about 13&ndash;18</h3>
+            <p>Curious how computers really work? Learn the same tool developers use every day, one clear task at a time.</p>
+          </article>
+          <article class="who-card w2">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 40 40" width="40" height="40"><path d="M20 6l12 4v9c0 8-5 13-12 15-7-2-12-7-12-15v-9z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/><path d="M14 20l4 4 8-8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg>
+            </span>
+            <h3>Parents and teachers</h3>
+            <p>Free and open source. No account, no tracking, works offline. Lessons run in a practice folder and you can read every line of the code.</p>
+          </article>
+          <article class="who-card w3">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 40 40" width="40" height="40"><path d="M8 30l6-20M16 30l6-20" stroke="currentColor" stroke-width="3.5"/><rect x="25" y="18" width="7" height="12" fill="currentColor"/></svg>
+            </span>
+            <h3>Complete beginners</h3>
+            <p>Never opened a terminal? Lesson 1 starts from zero, with step-by-step tasks, hints and plain-language explanations.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ safety ============ -->
+    <section id="safety" class="safety" aria-labelledby="safety-title">
+      <div class="container">
+        <p class="eyebrow">// Safe by design</p>
+        <h2 id="safety-title">Real commands, sensible guard rails</h2>
+        <p class="section-lead">You learn on your real computer, so we built in protection against the usual beginner accidents.</p>
+        <ul class="safe-grid">
+          <li class="safe-card">
+            <p class="safe-tag">sandbox</p>
+            <h3>A practice folder for every lesson</h3>
+            <p>Lessons happen inside a separate folder that is set up for you, so your own files stay out of the way.</p>
+          </li>
+          <li class="safe-card">
+            <p class="safe-tag">blocklist</p>
+            <h3>Dangerous commands are stopped</h3>
+            <p>Commands that can damage a computer, like <code>sudo</code>, disk tools or <code>shutdown</code>, are blocked with a short explanation.</p>
+          </li>
+          <li class="safe-card">
+            <p class="safe-tag">no root</p>
+            <h3>No admin rights needed</h3>
+            <p>Everything works as a normal user. The app refuses to start as root unless you explicitly ask it to.</p>
+          </li>
+          <li class="safe-card">
+            <p class="safe-tag">no data</p>
+            <h3>Nothing leaves your computer</h3>
+            <p>No servers, no accounts, no analytics. Your progress is a small file on your own machine.</p>
+          </li>
+        </ul>
+        <p class="honest"><strong>To be clear:</strong> the sandbox protects against accidents, not deliberate misuse. Commands are real and run as your user &mdash; that is what makes the practice real.</p>
+      </div>
+    </section>
+
+    <!-- ============ open source ============ -->
+    <section id="source" class="source" aria-labelledby="source-title">
+      <div class="container source-inner">
+        <div>
+          <p class="eyebrow eyebrow-dark">// Open source</p>
+          <h2 id="source-title">Free forever, MIT licensed</h2>
+          <p>Terminal Academy is open source. Fix a hint, improve an explanation or suggest a new lesson &mdash; lessons are plain JSON files, and issues and pull requests are welcome.</p>
+        </div>
+        <a class="btn btn-yellow" href="https://github.com/ank8dev/terminal-academy-by-ank">Contribute on GitHub <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="footer-brand" href="#top"><img src="brand/logo-wordmark.svg" alt="Terminal Academy" width="216" height="36"></a>
+      <ul class="footer-links">
+        <li><a href="https://github.com/ank8dev/terminal-academy-by-ank">GitHub</a></li>
+        <li><a href="https://github.com/ank8dev/terminal-academy-by-ank/blob/main/LICENSE">MIT License</a></li>
+        <li><a href="brand/">Brand</a></li>
+      </ul>
+    </div>
+    <p class="container disclaimer">Provided "as is", without warranty (MIT License). Commands are real and run on your computer; the sandbox protects against accidents, not deliberate misuse. No servers, no accounts, no data collected.</p>
+  </footer>
 </body>
 </html>

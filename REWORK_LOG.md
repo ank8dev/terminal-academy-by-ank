@@ -302,3 +302,32 @@ it clear to everyone. Important: no text can remove *all* responsibility in
 every country (for example, if you promise something false). That is why
 we also made the texts **honest** — never promise more than the app does.
 This is not legal advice; for full certainty ask a lawyer.
+
+### After stage 9 — Brand and new landing page (your request)
+
+**What was done**
+- You liked landing page v3 but it felt "like a kindergarten game". We
+  kept its bold look (ink blue, yellow, pink, cyan, thick borders, hard
+  shadows, the dotted course map) and removed all game words (play, quest,
+  badges, boss…). v1/v2/v3 were deleted (they stay in git history).
+- **Brand:** logo `t//a` (yellow slashes + cyan cursor on ink blue),
+  wordmark, small favicon version that reads at 16×16, app icons, social
+  preview image, and a **brand guide** page (`site/brand/`): colors with
+  hex and terminal codes, fonts, tone of voice ("do say / don't say").
+- **New landing page** (`site/index.html`): the course map shows the real
+  15 lessons in 5 levels; a "Safe by design" section with honest wording.
+- **CLI branding:** big "TERMINAL / ACADEMY" logo with a yellow→pink
+  gradient, a short boot animation (only in a real terminal; can be skipped
+  with Ctrl+C; never in tests/CI), and a new welcome screen. Found and
+  fixed a crash when the system is not set to UTF-8 (`LANG=C`).
+
+**Concept to understand — brand spec first:** before two agents worked in
+parallel (site and CLI), one shared "brand spec" fixed the colors, fonts,
+logo rules and forbidden words. That is why the website and the terminal
+app look like one product, even though different people (agents) built them.
+
+**Open questions**
+- The brand guide shows a simplified mock of the CLI welcome screen; it is
+  close to, but not exactly, the real one.
+- Level names on the course map ("Getting around", "Working with text"…)
+  were invented for the site; the app itself only shows "Level 1…5".

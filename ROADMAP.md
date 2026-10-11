@@ -11,7 +11,7 @@ a list to choose from. "Why" explains the value, so you can decide quickly.
 - **First real Mac run.** Play all 15 lessons on macOS with Apple's Python.
   *Why:* CI checks that steps are solvable, not that the text matches what a
   Mac prints (e.g. `ps`, `jobs` output).
-- **Choose one landing page** and publish it with GitHub Pages.
+- **Publish the landing page** with GitHub Pages and use the full URL for `og:image`.
 - **Small engine polish:** hide bash's `Terminated` line after a timeout;
   make `clear` safe when there is no terminal; pick a free port automatically
   in lessons 12/15 (or detect "Address already in use" with a friendly hint).
