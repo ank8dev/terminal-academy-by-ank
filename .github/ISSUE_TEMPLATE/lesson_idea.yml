@@ -1,0 +1,71 @@
+name: Lesson idea
+description: Propose a new lesson for Terminal Academy.
+title: "[Lesson]: "
+labels: ["lesson"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a lesson! Our learners are mostly teenagers and beginners,
+        so simple, hands-on ideas work best. See LESSONS_PLAN.md for lessons that are
+        already planned.
+  - type: input
+    id: topic
+    attributes:
+      label: Lesson topic
+      description: A short title for the lesson.
+      placeholder: "Pipes: connecting commands with |"
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What will the learner be able to do afterwards?
+      placeholder: Combine two commands, like `ls | wc -l`, to count files.
+    validations:
+      required: true
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands covered
+      description: List the commands or ideas the lesson would teach.
+      placeholder: |
+        - `|` (pipe)
+        - `wc -l`
+        - `grep`
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: Level
+      options:
+        - Beginner (first steps)
+        - Intermediate
+        - Advanced
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Rough outline (optional)
+      description: The steps or exercises you imagine, in order.
+      placeholder: |
+        1. Explain what a pipe is with a simple picture.
+        2. Ask the learner to run `ls | wc -l`.
+        3. Challenge: find all `.txt` files with `ls | grep txt`.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Lesson checklist
+      description: Every lesson needs to follow these rules.
+      options:
+        - label: The commands work on both macOS and Linux.
+        - label: The lesson does not need root / `sudo`.
+        - label: The commands are safe (no deleting or changing files outside the practice area).
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Want to help?
+      options:
+        - label: I'd like to write this lesson myself.

@@ -1,0 +1,80 @@
+name: Bug report
+description: Something is broken or not working as expected.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping make Terminal Academy better! Please fill in as much as you can.
+        Found a security problem? Please don't post it here — see SECURITY.md.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Tell us what went wrong.
+      placeholder: When I typed `ls -la` in lesson 3, the app crashed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: I expected the lesson to accept my answer.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we make the bug happen again?
+      placeholder: |
+        1. Run `./academy`
+        2. Start lesson "Moving around"
+        3. Type `cd ..`
+        4. See error
+    validations:
+      required: true
+  - type: input
+    id: lesson
+    attributes:
+      label: Lesson (if any)
+      description: Which lesson or step were you on?
+      placeholder: "Lesson 3: Listing files, step 2"
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Linux
+        - Windows (WSL)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version and terminal
+      placeholder: "macOS 15, Terminal.app / Ubuntu 24.04, GNOME Terminal"
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      description: Output of `python3 --version`
+      placeholder: Python 3.12.3
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output
+      description: Copy and paste any error messages here.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I searched the existing issues and this bug hasn't been reported yet.
+          required: true
