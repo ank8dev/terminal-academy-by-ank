@@ -37,6 +37,17 @@ MAX_SHOWN_BYTES = 200_000
 # disk against `yes > file` and similar accidents).
 MAX_FILE_BYTES = 100 * 1024 * 1024
 
+# Shell error messages mention the wrapper's line number, e.g.
+# "/usr/bin/bash: line 17: hello: command not found". The number means
+# nothing to a student, so we turn it into "bash: hello: command not found".
+_WRAPPER_LINE_RE = re.compile(
+    r"^(?:\S*/)?(bash|sh|dash)(?:: eval)?: (?:line )?\d+: ", re.MULTILINE
+)
+
+
+def _clean_stderr(text: str) -> str:
+    return _WRAPPER_LINE_RE.sub(r"\1: ", text)
+
 # The wrapper. The student command is passed in an environment variable and
 # run with `eval`, so a syntax error or a `#` comment in it cannot break the
 # wrapper. The EXIT trap saves the folder and environment even after `exit`.
@@ -291,6 +302,7 @@ class Shell:
                 self.pgids.discard(pgid)
             stdout, t1 = _read_limited(out)
             stderr, t2 = _read_limited(err)
+            stderr = _clean_stderr(stderr)
         return Result(
             stdout=stdout,
             stderr=stderr,

@@ -164,6 +164,11 @@ class ShellTest(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("does-not-exist", r.stderr)
 
+    def test_error_messages_hide_wrapper_line_number(self):
+        r = self.sh.run("no-such-command-xyz")
+        self.assertIn("no-such-command-xyz", r.stderr)
+        self.assertNotRegex(r.stderr, r"line \d+|: \d+:")
+
     def test_exit_code(self):
         self.assertEqual(self.sh.run("true").returncode, 0)
         self.assertEqual(self.sh.run("false").returncode, 1)
