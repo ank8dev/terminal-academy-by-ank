@@ -1,0 +1,129 @@
+{
+  "format_version": 1,
+  "id": "06-pipes-and-redirection",
+  "title": "Pipes and Redirection",
+  "level": 2,
+  "minutes": 8,
+  "summary": "Save output into files with > and >>, and connect commands with the pipe |.",
+  "intro": "Until now, every answer went to the screen.\nIn this lesson you will send output into files, add lines to a diary, and connect commands like LEGO bricks with the pipe |.\nThere is a list of names in names.txt. Some names appear twice!",
+  "outro": "Awesome! With >, >> and | you can combine small commands into powerful tools. This is the real superpower of the terminal.",
+  "setup": [
+    {
+      "path": "names.txt",
+      "content": "Zoe\nBen\nAlice\nMax\nBen\nCarla\nAlice\nMax\nLeo\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Save the output of ls into a file called files.txt (instead of showing it on the screen).",
+      "hints": [
+        "The arrow > sends the output into a file instead of the screen.",
+        "Type: ls > files.txt"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": "files.txt",
+        "text": "names.txt"
+      },
+      "explain": "Nothing appeared on the screen, because the output went into files.txt. Check with cat files.txt. Careful: > creates the file, or REPLACES everything in it if it already exists.",
+      "solution": "ls > files.txt"
+    },
+    {
+      "instruction": "Start a diary: write the line Day 1: I learned pipes into a file called diary.txt.",
+      "hints": [
+        "Use echo to make the text and > to put it into the file.",
+        "Type: echo \"Day 1: I learned pipes\" > diary.txt"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": "diary.txt",
+        "text": "Day 1"
+      },
+      "explain": "echo plus > is the fastest way to make a small text file.",
+      "solution": "echo \"Day 1: I learned pipes\" > diary.txt"
+    },
+    {
+      "instruction": "Add a second line, starting with Day 2:, to diary.txt. Don't lose Day 1!",
+      "hints": [
+        "Two arrows >> mean 'append': add at the end of the file.",
+        "If you lost Day 1, just write it again with >, then add Day 2 with >>.",
+        "Type: echo \"Day 2: I learned >>\" >> diary.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_contains",
+            "path": "diary.txt",
+            "text": "Day 1"
+          },
+          {
+            "type": "file_contains",
+            "path": "diary.txt",
+            "text": "Day 2"
+          }
+        ]
+      },
+      "explain": "> replaces, >> adds. Mixing them up is a classic mistake that everybody makes once. Look at your diary with cat diary.txt.",
+      "solution": "echo \"Day 2: I learned >>\" >> diary.txt"
+    },
+    {
+      "instruction": "Sort the names in names.txt and remove the repeated ones, in ONE line.",
+      "hints": [
+        "The pipe | (Shift + backslash on most keyboards) sends the output of one command into the next one. sort sorts lines, uniq removes repeats.",
+        "Type: sort names.txt | uniq"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "\\|\\s*uniq"
+          },
+          {
+            "type": "output_contains",
+            "text": "Alice\nBen\nCarla"
+          }
+        ]
+      },
+      "explain": "Your first pipe! uniq only removes repeats that are NEXT TO each other. That's why we sort first: then the same names end up side by side.",
+      "solution": "sort names.txt | uniq"
+    },
+    {
+      "instruction": "Now save the sorted names without repeats into a file called unique_names.txt.",
+      "hints": [
+        "Put > and the file name at the very end of the pipe.",
+        "Type: sort names.txt | uniq > unique_names.txt"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": "unique_names.txt",
+        "text": "Carla\nLeo\nMax\nZoe"
+      },
+      "explain": "Pipes and redirection work together like LEGO bricks: the data flows from left to right, and > catches it at the end.",
+      "solution": "sort names.txt | uniq > unique_names.txt"
+    },
+    {
+      "instruction": "How many different names are there? Count them with a pipe.",
+      "hints": [
+        "Add one more brick at the end: | wc -l",
+        "Type: sort names.txt | uniq | wc -l"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "\\|\\s*wc\\s+-l"
+          },
+          {
+            "type": "output_contains",
+            "text": "6"
+          }
+        ]
+      },
+      "explain": "6 different names! One more secret: error messages travel in a different stream, called stderr, so > does not catch them. Use 2> to save errors, for example: ls nothing 2> errors.txt",
+      "solution": "sort names.txt | uniq | wc -l"
+    }
+  ]
+}

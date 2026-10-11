@@ -1,0 +1,200 @@
+{
+  "format_version": 1,
+  "id": "12-local-web-server",
+  "title": "Your Own Web Server",
+  "level": 4,
+  "minutes": 8,
+  "summary": "Start a real web server on your computer, talk to it with curl and stop it again.",
+  "intro": "Every website lives on a server: a computer program that waits for requests and sends back pages.\nToday you will start your very own web server, right here on your computer!\nIt is safe: only your own computer can reach it, and it works without internet.",
+  "outro": "You ran a real web server, asked it for pages, read its log and stopped it. That is exactly how the web works, just on a much bigger scale. Awesome job!",
+  "requires": [
+    "curl"
+  ],
+  "setup": [
+    {
+      "path": "site/index.html",
+      "content": "<h1>My first server</h1>\n"
+    },
+    {
+      "path": "site/hello.txt",
+      "content": "Hello from your server!\n"
+    },
+    {
+      "path": ".curlrc",
+      "content": "# Terminal Academy: hide curl's progress bar (a normal terminal does not show it either), but still show errors.\nsilent\nshow-error\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Go into the folder site. It has the files of your website.",
+      "hints": [
+        "You know this one!",
+        "Type: cd site"
+      ],
+      "check": {
+        "type": "cwd_is",
+        "path": "site"
+      },
+      "explain": "The server will share the files of the folder it starts in. So it's important to be in the right place.",
+      "solution": "cd site"
+    },
+    {
+      "instruction": "Start a web server on port 8765, only for this computer, in the background. Save its messages in server.log.",
+      "hints": [
+        "Python has a small web server built in: python3 -m http.server. Don't forget the & at the end, or the server blocks your terminal.",
+        "> server.log 2>&1 sends all its messages into the file server.log.",
+        "Type: python3 -m http.server 8765 --bind 127.0.0.1 > server.log 2>&1 &"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^python3\\s+-m\\s+http\\.server\\b.*>\\s*server\\.log.*&\\s*$"
+      },
+      "explain": "A server is a program that waits for requests on a port. --bind 127.0.0.1 means only your own computer can reach it. If cat server.log ever shows 'Address already in use', another program has that port: use 8766 instead (also in the next steps).",
+      "solution": "python3 -m http.server 8765 --bind 127.0.0.1 > server.log 2>&1 &"
+    },
+    {
+      "instruction": "Ask your server for the file hello.txt.",
+      "hints": [
+        "A URL is: http:// + address + : + port + /file",
+        "Type: curl http://127.0.0.1:8765/hello.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b.*(127\\.0\\.0\\.1|localhost)"
+          },
+          {
+            "type": "output_contains",
+            "text": "Hello from your server!"
+          }
+        ]
+      },
+      "explain": "You are the client, Python is the server. The client asks, the server answers. That's how the whole web works! http://localhost:8765/hello.txt works too.",
+      "solution": "sleep 1\ncurl http://127.0.0.1:8765/hello.txt",
+      "requires": [
+        "curl"
+      ]
+    },
+    {
+      "instruction": "Ask only for the headers of the main page (the URL that ends with just /).",
+      "hints": [
+        "curl -I asks only for the 'head' of the answer, not the page itself.",
+        "Type: curl -I http://127.0.0.1:8765/"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b.*\\s(-I|--head)\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "200"
+          }
+        ]
+      },
+      "explain": "200 OK means 'all good, here it is'. The headers also tell the type of the content (text/html) and its size. If you type the same URL in your browser, you see your page!",
+      "solution": "curl -I http://127.0.0.1:8765/",
+      "requires": [
+        "curl"
+      ]
+    },
+    {
+      "instruction": "Ask for a page that does not exist, like /nope.html.",
+      "hints": [
+        "Same as before, but with a different file name.",
+        "Type: curl http://127.0.0.1:8765/nope.html"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b.*nope"
+          },
+          {
+            "type": "output_contains",
+            "text": "404"
+          }
+        ]
+      },
+      "explain": "404 Not Found: you have seen this on websites. Now you know where it comes from: the server looked for the file and didn't find it.",
+      "solution": "curl http://127.0.0.1:8765/nope.html",
+      "requires": [
+        "curl"
+      ]
+    },
+    {
+      "instruction": "Servers write down every request. Read your server's log file, server.log.",
+      "hints": [
+        "It's a normal text file. Which command shows a file?",
+        "Type: cat server.log"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "server\\.log"
+          },
+          {
+            "type": "output_contains",
+            "text": "GET /hello.txt"
+          }
+        ]
+      },
+      "explain": "Each line is one request: who asked (127.0.0.1), when, what (GET /hello.txt) and the answer code (200 or 404). Real websites keep logs like this too.",
+      "solution": "cat server.log",
+      "requires": [
+        "curl"
+      ]
+    },
+    {
+      "instruction": "Time to clean up. Find the PID of the server and stop it with kill.",
+      "hints": [
+        "ps aux | grep http.server shows the server. The PID is in the second column. Then: kill PID",
+        "pgrep -f \"http.server 8765\" prints just the PID of your server. You can put it right into kill with $( ).",
+        "Type: kill $(pgrep -f \"http.server 8765\")"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^kill\\s+(-[A-Za-z0-9]+\\s+)?(\\d+|\\$\\(\\s*pgrep\\s[^)]*http[^)]*\\))\\s*$"
+      },
+      "explain": "Always stop servers you don't need anymore. (Terminal Academy also stops them when you leave a lesson, but your real terminal won't!)",
+      "solution": "kill $(pgrep -f 'http.server 8765')",
+      "requires": [
+        "pgrep"
+      ]
+    },
+    {
+      "instruction": "Prove it: ask the server for hello.txt one more time.",
+      "hints": [
+        "Use the same curl command as in step 3. You can press the Up arrow to find it.",
+        "Type: curl http://127.0.0.1:8765/hello.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "Failed to connect",
+            "stream": "both"
+          }
+        ]
+      },
+      "explain": "Nobody answers anymore: 'Failed to connect' means no program is waiting on that port. Your server is really gone.",
+      "solution": "sleep 1\ncurl http://127.0.0.1:8765/hello.txt",
+      "requires": [
+        "curl",
+        "pgrep"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "format_version": 1,
+  "id": "11-network-basics",
+  "title": "Network Basics",
+  "level": 4,
+  "minutes": 7,
+  "summary": "Names, addresses, localhost, URLs and ports: hostname, /etc/hosts, ping, curl.",
+  "intro": "Computers talk to each other over networks. The internet is just a giant network of networks!\nIn this lesson you will learn how computers find each other: names, addresses, URLs and ports.\nGood news: everything here works offline. We only talk to your own computer.",
+  "outro": "Now you know the basics of networks: names, IP addresses, localhost, URLs and ports. In the next lesson you will run your own web server!",
+  "setup": [
+    {
+      "path": "page.html",
+      "content": "<h1>Hello offline web</h1>\n"
+    },
+    {
+      "path": ".curlrc",
+      "content": "# Terminal Academy: hide curl's progress bar (a normal terminal does not show it either), but still show errors.\nsilent\nshow-error\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Every computer has a name. Print the name of your computer.",
+      "hints": [
+        "A 'host' is a computer on a network. The command is hostname.",
+        "Type: hostname"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^hostname\\s*$"
+      },
+      "explain": "Every computer on a network has a name and an address. The address is called an IP address, and it looks like 192.168.1.20.",
+      "solution": "hostname",
+      "requires": [
+        "hostname"
+      ]
+    },
+    {
+      "instruction": "Show the file /etc/hosts. It is outside your sandbox, but reading it is fine (just don't change it).",
+      "hints": [
+        "Use cat with the full path of the file.",
+        "Type: cat /etc/hosts"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "/etc/hosts"
+          },
+          {
+            "type": "output_contains",
+            "text": "localhost"
+          }
+        ]
+      },
+      "explain": "This file is like a tiny phone book: it maps names to addresses. The line 127.0.0.1 localhost means: the name localhost is the address 127.0.0.1, and both mean 'this computer itself'.",
+      "solution": "cat /etc/hosts"
+    },
+    {
+      "instruction": "Is anybody home? Send 2 pings to 127.0.0.1 (that's you!).",
+      "hints": [
+        "-c 2 means 'count 2', so ping stops by itself after 2 tries.",
+        "Type: ping -c 2 127.0.0.1"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^ping\\s+.*-c\\s*\\d"
+          },
+          {
+            "type": "output_contains",
+            "text": "127.0.0.1"
+          }
+        ]
+      },
+      "explain": "ping sends a tiny message and waits for the answer. The time (in ms) shows how fast the answer came back. Without -c, ping never stops; then press Ctrl+C.",
+      "solution": "ping -c 2 127.0.0.1",
+      "requires": [
+        "ping"
+      ],
+      "optional": true
+    },
+    {
+      "instruction": "A URL is the address of something, like a web page. Use curl to read page.html with a file:// URL.",
+      "hints": [
+        "A URL has a scheme (http, https, file), then ://, then the place. For file:// the place is the FULL path of the file, and $HOME is the full path of your sandbox.",
+        "Type: curl \"file://$HOME/page.html\""
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^curl\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "Hello offline web"
+          }
+        ]
+      },
+      "explain": "curl gets whatever a URL points to and prints it. With internet, curl https://example.com would print the code of a real web page, the same code your browser gets.",
+      "solution": "curl \"file://$HOME/page.html\"",
+      "requires": [
+        "curl"
+      ]
+    },
+    {
+      "instruction": "One computer can run many services. Each one waits behind its own port number. Find the ports of ssh, http and https in the file /etc/services. (If your computer has no such file, just type skip.)",
+      "hints": [
+        "A port is like a door number on a computer. Search the file /etc/services with grep.",
+        "Type: grep -E \"^(ssh|http|https)[[:space:]]\" /etc/services"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^grep\\b.*/etc/services"
+          },
+          {
+            "type": "output_contains",
+            "text": "ssh"
+          }
+        ]
+      },
+      "explain": "ssh uses port 22, http uses port 80 and https uses port 443. So https://example.com really means: computer example.com, door 443.",
+      "solution": "grep -E \"^(ssh|http|https)[[:space:]]\" /etc/services",
+      "optional": true
+    }
+  ]
+}

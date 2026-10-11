@@ -1,0 +1,117 @@
+{
+  "format_version": 1,
+  "id": "02-moving-around",
+  "title": "Moving Around",
+  "level": 1,
+  "minutes": 6,
+  "summary": "Walk through folders with cd, .. and ~, and find hidden files.",
+  "intro": "Folders can live inside other folders, like boxes inside boxes.\nIn this lesson you will walk into folders, climb back out, jump home, and discover a hidden file.\nWatch the prompt: it always shows where you are standing. ~ means your home folder.",
+  "outro": "You can now walk anywhere you like! cd, .., ~ and ls -a are your map and compass.",
+  "setup": [
+    {
+      "path": "school/math/homework.txt",
+      "content": "2 + 2 = 4\n"
+    },
+    {
+      "path": "school/art/drawing.txt",
+      "content": "A dragon, drawn with letters.\n"
+    },
+    {
+      "path": "games",
+      "dir": true
+    },
+    {
+      "path": ".secret_note.txt",
+      "content": "You found the hidden file!\n"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Go into the folder school.",
+      "hints": [
+        "cd means 'change directory'. After cd, write the name of the folder.",
+        "Type: cd school"
+      ],
+      "check": {
+        "type": "cwd_is",
+        "path": "school"
+      },
+      "explain": "Look at the prompt: it now shows ~/school. You moved into the folder, like double-clicking it. Try ls to see what is inside.",
+      "solution": "cd school"
+    },
+    {
+      "instruction": "Now go one level deeper, into the folder math.",
+      "hints": [
+        "You are already inside school, so you only need the name of the next folder.",
+        "Type: cd math"
+      ],
+      "check": {
+        "type": "cwd_is",
+        "path": "school/math"
+      },
+      "explain": "A path like math is called relative: it starts from the folder where you are standing right now.",
+      "solution": "cd math"
+    },
+    {
+      "instruction": "Go back up one folder, to school.",
+      "hints": [
+        "Two dots .. mean 'the folder above me' (the parent folder).",
+        "Type: cd .."
+      ],
+      "check": {
+        "type": "cwd_is",
+        "path": "school"
+      },
+      "explain": "One dot . is the folder you are in. Two dots .. are the folder above it. cd ../.. would climb up two levels.",
+      "solution": "cd .."
+    },
+    {
+      "instruction": "Jump straight back to your home folder.",
+      "hints": [
+        "The symbol ~ (tilde) means 'home'. And cd with nothing after it also goes home.",
+        "Type: cd ~"
+      ],
+      "check": {
+        "type": "cwd_is",
+        "path": "."
+      },
+      "explain": "In Terminal Academy, home (~) is your sandbox. In a real terminal, ~ is your own user folder, like /Users/ank on a Mac or /home/ank on Linux.",
+      "solution": "cd ~"
+    },
+    {
+      "instruction": "A file is hiding here! Show ALL files, also the hidden ones.",
+      "hints": [
+        "Plain ls does not show hidden files. ls has an option -a, which means 'all'.",
+        "Type: ls -a"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^ls\\s+(.*\\s)?-[a-zA-Z]*a"
+          },
+          {
+            "type": "output_contains",
+            "text": ".secret_note.txt"
+          }
+        ]
+      },
+      "explain": "Files whose name starts with a dot (.) are hidden. Settings files are often hidden, so they don't clutter your folders. You also see . and .. in the list. Read the note with cat .secret_note.txt if you like!",
+      "solution": "ls -a"
+    },
+    {
+      "instruction": "Go into the folder school/art with ONE command.",
+      "hints": [
+        "You can join folder names with a slash /.",
+        "Type: cd school/art"
+      ],
+      "check": {
+        "type": "cwd_is",
+        "path": "school/art"
+      },
+      "explain": "A path that starts with / is absolute: it starts at the very top of the computer, like /Users or /home. A path without / at the start is relative. Pro tip for real terminals: type the first letters and press Tab, and the shell completes the name for you.",
+      "solution": "cd school/art"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-15, not macos-latest: on the macos-26 arm64 image a plain
+        # `curl http://127.0.0.1:PORT` to `python3 -m http.server` times out
+        # (reproduced outside the app), which breaks lessons 12 and 15.
+        os: [ubuntu-latest, macos-15]
+        python: ["3.9", "3.13"]
+        exclude:
+          # macos-15 runs on Apple Silicon (arm64), and actions/setup-python
+          # has no arm64 build of Python 3.9 for macOS (only x64).
+          - os: macos-15
+            python: "3.9"
+        include:
+          # So Python 3.9 on macOS runs on the Intel image instead.
+          - os: macos-15-intel
+            python: "3.9"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Show versions
+        run: |
+          python --version
+          bash --version | head -n 1
+
+      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 times
+      # out after 35 s (measured: socket.getfqdn("127.0.0.1")). The stdlib
+      # `python3 -m http.server` calls getfqdn() after bind() but before
+      # listen(), so in lessons 12 and 15 curl hangs. This is a runner
+      # problem, not an app problem, so CI (only) loads a tiny
+      # sitecustomize.py that makes getfqdn() return at once.
+      - name: Work around slow reverse DNS (macOS runners)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p "$RUNNER_TEMP/pyshim"
+          printf '%s\n' 'import socket' 'socket.getfqdn = lambda name="": name or "localhost"' > "$RUNNER_TEMP/pyshim/sitecustomize.py"
+          echo "PYTHONPATH=$RUNNER_TEMP/pyshim" >> "$GITHUB_ENV"
+
+      - name: Lint (byte-compile everything)
+        run: python -m compileall -q terminal_academy tests
+
+      # The suite also checks that every lesson JSON file is valid and solvable,
+      # and that the landing page HTML files in site/ exist (tests/test_repo.py).
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Launcher
+        run: ./academy --version
+
+      - name: Debug local web server (only when tests failed)
+        if: failure() && runner.os == 'macOS'
+        run: |
+          uname -m; command -v python3; python3 --version
+          sysctl net.inet.tcp.blackhole net.inet.udp.blackhole || true
+          python3 - <<'PY'
+          import socket, time
+          for what, fn in [("gethostname", socket.gethostname),
+                           ("getfqdn(127.0.0.1)", lambda: socket.getfqdn("127.0.0.1")),
+                           ("getfqdn(gethostname)", lambda: socket.getfqdn(socket.gethostname()))]:
+              t = time.time()
+              try:
+                  r = fn()
+              except Exception as e:
+                  r = repr(e)
+              print(f"{what}: {r!r} in {time.time() - t:.1f}s")
+          PY
+          cd "$(mktemp -d)" && echo hi > hi.txt
+          python3 -u -m http.server 8799 --bind 127.0.0.1 > server.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -s --max-time 1 http://127.0.0.1:8799/hi.txt; then echo "reachable after ~${i}s"; break; fi
+            sleep 0.5
+          done
+          lsof -nP -iTCP:8799 || true
+          cat server.log
+          kill %1 || true
+
+  stock-macos:
+    # A Mac as a student gets it: Apple's own python3 (from the Xcode
+    # command line tools) and the old bash 3.2 in /bin/bash.
+    name: Tests (macos-15, system Python)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show versions
+        run: |
+          /usr/bin/python3 --version
+          /bin/bash --version | head -n 1
+
+      # On GitHub's Apple Silicon runners, reverse DNS for 127.0.0.1 times
+      # out after 35 s (measured: socket.getfqdn("127.0.0.1")). The stdlib
+      # `python3 -m http.server` calls getfqdn() after bind() but before
+      # listen(), so in lessons 12 and 15 curl hangs. This is a runner
+      # problem, not an app problem, so CI (only) loads a tiny
+      # sitecustomize.py that makes getfqdn() return at once.
+      - name: Work around slow reverse DNS (macOS runners)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p "$RUNNER_TEMP/pyshim"
+          printf '%s\n' 'import socket' 'socket.getfqdn = lambda name="": name or "localhost"' > "$RUNNER_TEMP/pyshim/sitecustomize.py"
+          echo "PYTHONPATH=$RUNNER_TEMP/pyshim" >> "$GITHUB_ENV"
+
+      - name: Unit tests
+        run: /usr/bin/python3 -m unittest discover -s tests -v
+
+      - name: Launcher
+        run: PATH="/usr/bin:/bin" ./academy --version
+
+      - name: Debug local web server (only when tests failed)
+        if: failure() && runner.os == 'macOS'
+        run: |
+          uname -m; command -v python3; python3 --version
+          sysctl net.inet.tcp.blackhole net.inet.udp.blackhole || true
+          python3 - <<'PY'
+          import socket, time
+          for what, fn in [("gethostname", socket.gethostname),
+                           ("getfqdn(127.0.0.1)", lambda: socket.getfqdn("127.0.0.1")),
+                           ("getfqdn(gethostname)", lambda: socket.getfqdn(socket.gethostname()))]:
+              t = time.time()
+              try:
+                  r = fn()
+              except Exception as e:
+                  r = repr(e)
+              print(f"{what}: {r!r} in {time.time() - t:.1f}s")
+          PY
+          cd "$(mktemp -d)" && echo hi > hi.txt
+          python3 -u -m http.server 8799 --bind 127.0.0.1 > server.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -s --max-time 1 http://127.0.0.1:8799/hi.txt; then echo "reachable after ~${i}s"; break; fi
+            sleep 0.5
+          done
+          lsof -nP -iTCP:8799 || true
+          cat server.log
+          kill %1 || true

@@ -1,0 +1,42 @@
+#!/bin/sh
+# Terminal Academy launcher.
+# Finds python3, checks that it is 3.9 or newer, and starts the app from the
+# folder this script lives in (also when you call it through a symlink).
+
+# Follow symlinks to find the real script (macOS has no `readlink -f`).
+script=$0
+while [ -L "$script" ]; do
+    dir=$(cd "$(dirname "$script")" && pwd -P)
+    link=$(readlink "$script")
+    case $link in
+        /*) script=$link ;;
+        *) script=$dir/$link ;;
+    esac
+done
+here=$(cd "$(dirname "$script")" && pwd -P)
+
+python=
+for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+        python=$candidate
+        break
+    fi
+done
+
+if [ -z "$python" ]; then
+    echo "Terminal Academy needs Python 3.9 or newer, but I could not find python3." >&2
+    echo "Install it from https://www.python.org/downloads/ (or with your package manager)," >&2
+    echo "then run ./academy again." >&2
+    exit 1
+fi
+
+if ! "$python" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 9) else 1)' 2>/dev/null; then
+    version=$("$python" -c 'import sys; print("%d.%d.%d" % sys.version_info[:3])' 2>/dev/null)
+    echo "Terminal Academy needs Python 3.9 or newer, but you have ${version:-an unknown version}." >&2
+    echo "Please install a newer Python from https://www.python.org/downloads/" >&2
+    exit 1
+fi
+
+PYTHONPATH="$here${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH
+exec "$python" -m terminal_academy "$@"

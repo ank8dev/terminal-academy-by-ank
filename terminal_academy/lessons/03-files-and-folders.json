@@ -1,0 +1,132 @@
+{
+  "format_version": 1,
+  "id": "03-files-and-folders",
+  "title": "Files and Folders",
+  "level": 1,
+  "minutes": 8,
+  "summary": "Create, copy, move and delete files and folders.",
+  "intro": "Your sandbox is a little messy.\nIn this lesson you will build folders, make files, copy them, rename them and clean up.\nEverything happens inside your sandbox, so your real files are safe from mistakes.",
+  "outro": "Great job! You can now organize files like a pro.",
+  "setup": [
+    {
+      "path": "old_name.txt",
+      "content": "rename me\n"
+    },
+    {
+      "path": "junk.txt",
+      "content": "delete me\n"
+    },
+    {
+      "path": "empty_box",
+      "dir": true
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Make a new folder called projects.",
+      "hints": [
+        "The command to make a directory is mkdir.",
+        "Type: mkdir projects"
+      ],
+      "check": {
+        "type": "dir_exists",
+        "path": "projects"
+      },
+      "explain": "mkdir means 'make directory'. A directory is the same thing as a folder.",
+      "solution": "mkdir projects"
+    },
+    {
+      "instruction": "Make the folders projects/game/levels in ONE command.",
+      "hints": [
+        "mkdir has an option that creates the parent folders too: -p",
+        "Type: mkdir -p projects/game/levels"
+      ],
+      "check": {
+        "type": "dir_exists",
+        "path": "projects/game/levels"
+      },
+      "explain": "mkdir -p creates every missing folder on the path. Without -p, mkdir fails if 'game' does not exist yet.",
+      "solution": "mkdir -p projects/game/levels"
+    },
+    {
+      "instruction": "Create an empty file projects/game/notes.txt",
+      "hints": [
+        "touch creates an empty file.",
+        "Type: touch projects/game/notes.txt"
+      ],
+      "check": {
+        "type": "file_exists",
+        "path": "projects/game/notes.txt"
+      },
+      "explain": "touch creates an empty file, or updates the time of a file that already exists.",
+      "solution": "touch projects/game/notes.txt"
+    },
+    {
+      "instruction": "Copy projects/game/notes.txt to projects/game/notes_backup.txt",
+      "hints": [
+        "cp means copy: cp FROM TO",
+        "Type: cp projects/game/notes.txt projects/game/notes_backup.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_exists",
+            "path": "projects/game/notes.txt"
+          },
+          {
+            "type": "file_exists",
+            "path": "projects/game/notes_backup.txt"
+          }
+        ]
+      },
+      "explain": "cp copies a file. The original stays. To copy a whole folder, use cp -r.",
+      "solution": "cp projects/game/notes.txt projects/game/notes_backup.txt"
+    },
+    {
+      "instruction": "Rename old_name.txt to new_name.txt",
+      "hints": [
+        "In the terminal, renaming is the same as moving: mv",
+        "Type: mv old_name.txt new_name.txt"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "path_missing",
+            "path": "old_name.txt"
+          },
+          {
+            "type": "file_contains",
+            "path": "new_name.txt",
+            "text": "rename me"
+          }
+        ]
+      },
+      "explain": "mv moves OR renames. mv a.txt b.txt renames. mv a.txt folder/ moves it into the folder.",
+      "solution": "mv old_name.txt new_name.txt"
+    },
+    {
+      "instruction": "Clean up: delete junk.txt and the empty folder empty_box.",
+      "hints": [
+        "rm deletes a file. rmdir deletes an EMPTY folder.",
+        "Type: rm junk.txt   and then:   rmdir empty_box"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "path_missing",
+            "path": "junk.txt"
+          },
+          {
+            "type": "path_missing",
+            "path": "empty_box"
+          }
+        ]
+      },
+      "explain": "Careful: rm does NOT use a trash can. The file is gone forever. Always check twice before you press Enter.",
+      "solution": "rm junk.txt\nrmdir empty_box"
+    }
+  ]
+}

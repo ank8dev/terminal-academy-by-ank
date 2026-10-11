@@ -1,0 +1,150 @@
+{
+  "format_version": 1,
+  "id": "10-processes",
+  "title": "Processes",
+  "level": 4,
+  "minutes": 8,
+  "summary": "See running programs, run them in the background and stop them: ps, &, $!, kill, jobs.",
+  "intro": "Every program that runs on your computer is a process.\nRight now there are hundreds of them: your browser, your music, this app...\nIn this lesson you will look at processes, start one in the background, find it and stop it.\nOne note: in Terminal Academy, every command line runs in a fresh shell. So jobs only knows jobs from the same line. Your real terminal remembers more.",
+  "outro": "You can now see, start and stop processes like a real system admin! Remember: & sends a program to the background, $! gives you its PID, and kill stops it.",
+  "setup": [
+    {
+      "path": "slow.sh",
+      "content": "#!/bin/sh\necho start\nsleep 3\necho done\n",
+      "mode": "755"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Show the processes that are running in your terminal.",
+      "hints": [
+        "ps means 'process status'.",
+        "Type: ps"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^ps\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "PID"
+          }
+        ]
+      },
+      "explain": "Every running program gets a number: the PID (process ID). The CMD column shows the name of the program. You may even see ps itself in the list!",
+      "solution": "ps",
+      "requires": [
+        "ps"
+      ]
+    },
+    {
+      "instruction": "Run the script ./slow.sh and wait until it finishes.",
+      "hints": [
+        "It takes 3 seconds. Be patient!",
+        "Type: ./slow.sh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "slow\\.sh"
+          },
+          {
+            "type": "output_contains",
+            "text": "done"
+          }
+        ]
+      },
+      "explain": "That was a foreground process: the terminal waits until it ends, and you can't type anything else. If a program takes too long, Ctrl+C stops it.",
+      "solution": "./slow.sh"
+    },
+    {
+      "instruction": "Now start sleep 300 in the background. In the same line, save its PID in the file sleep.pid.",
+      "hints": [
+        "Put & after a command to run it in the background. Then $! holds the PID of that background process.",
+        "echo $! > sleep.pid writes the PID into a file.",
+        "Type: sleep 300 & echo $! > sleep.pid"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^sleep\\s+\\d+\\s*&"
+          },
+          {
+            "type": "file_exists",
+            "path": "sleep.pid"
+          }
+        ]
+      },
+      "explain": "sleep 300 waits 300 seconds and does nothing else. Thanks to & you got your prompt back at once: the process runs in the background. Type cat sleep.pid to see its PID.",
+      "solution": "sleep 300 & echo $! > sleep.pid"
+    },
+    {
+      "instruction": "Find the sleep process in the list of ALL processes.",
+      "hints": [
+        "ps aux shows all processes. That's a lot, so send the list to grep with a pipe |.",
+        "Type: ps aux | grep sleep"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "grep\\s+.*sleep"
+          },
+          {
+            "type": "output_contains",
+            "text": "sleep 300"
+          }
+        ]
+      },
+      "explain": "The second column is the PID. It's the same number as in sleep.pid. You may also see the grep command itself in the list, because it was running too!",
+      "solution": "ps aux | grep sleep",
+      "requires": [
+        "ps"
+      ]
+    },
+    {
+      "instruction": "Stop the sleep process with kill and its PID.",
+      "hints": [
+        "kill PID, for example: kill 12345 (use YOUR number, from cat sleep.pid or from step 4).",
+        "You can also let the shell read the number for you: $(cat sleep.pid)",
+        "Type: kill $(cat sleep.pid)"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^kill\\s+(-[A-Za-z0-9]+\\s+)?(\\d+|\\$\\(\\s*cat\\s+(\\./)?sleep\\.pid\\s*\\)|`cat\\s+(\\./)?sleep\\.pid`)\\s*$"
+      },
+      "explain": "kill sends a signal that asks a process to stop. kill -9 PID forces it, but use that only when a normal kill does not work. Check with ps aux | grep sleep: the sleep 300 is gone.",
+      "solution": "kill $(cat sleep.pid)"
+    },
+    {
+      "instruction": "In ONE line, start sleep 5 in the background and then list your jobs.",
+      "hints": [
+        "First the background command with &, then the command jobs. Both on the same line.",
+        "Type: sleep 5 & jobs"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "&\\s*jobs\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "Running"
+          }
+        ]
+      },
+      "explain": "jobs lists the background jobs of your shell. In a real terminal you can also type fg to bring a job back to the foreground, or kill %1 to stop job number 1.",
+      "solution": "sleep 5 & jobs"
+    }
+  ]
+}

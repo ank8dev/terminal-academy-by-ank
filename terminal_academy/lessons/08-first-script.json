@@ -1,0 +1,140 @@
+{
+  "format_version": 1,
+  "id": "08-first-script",
+  "title": "Your First Script",
+  "level": 3,
+  "minutes": 10,
+  "summary": "Write a real script: the #!/bin/sh line, $1, a for loop and $(...).",
+  "intro": "A script is a list of commands saved in a file.\nInstead of typing the same things again and again, you write them once and run the file.\nToday you will build a script line by line that says hello to anyone, and a second one that uses a loop.",
+  "outro": "You are a script writer now! A shebang line, arguments like $1, a for loop and $(...) are the building blocks of almost every shell script in the world. Try cat greet.sh to admire your work.",
+  "setup": [
+    {
+      "path": "notes.txt",
+      "content": "buy milk\n"
+    },
+    {
+      "path": "todo.txt",
+      "content": "learn bash\n"
+    },
+    {
+      "path": "cat.jpg",
+      "content": ""
+    },
+    {
+      "path": "dog.jpg",
+      "content": ""
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Create a file greet.sh whose first line is #!/bin/sh",
+      "hints": [
+        "echo can write text into a file with >. Put the text in single quotes ' ' so the shell does not change it.",
+        "Type: echo '#!/bin/sh' > greet.sh"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": "greet.sh",
+        "text": "#!/bin/sh"
+      },
+      "explain": "This first line is called the shebang (say 'sha-bang'). It tells the computer which program should run the script. Here it is /bin/sh, the standard shell.",
+      "solution": "echo '#!/bin/sh' > greet.sh"
+    },
+    {
+      "instruction": "Add this line to the end of greet.sh: echo \"Hello, $1!\"",
+      "hints": [
+        "Use >> to ADD a line (one > would replace the whole file!). Put single quotes on the outside and keep the double quotes inside.",
+        "Type: echo 'echo \"Hello, $1!\"' >> greet.sh"
+      ],
+      "check": {
+        "type": "file_contains",
+        "path": "greet.sh",
+        "text": "Hello, $1"
+      },
+      "explain": "$1 is the first word you give the script when you run it. The single quotes kept $1 as plain text in the file, so it gets its value later, when the script runs. Peek at your file with cat greet.sh",
+      "solution": "echo 'echo \"Hello, $1!\"' >> greet.sh"
+    },
+    {
+      "instruction": "Make greet.sh executable (mode 755).",
+      "hints": [
+        "You did this in the last lesson, with chmod.",
+        "Type: chmod 755 greet.sh"
+      ],
+      "check": {
+        "type": "file_mode",
+        "path": "greet.sh",
+        "mode": "755"
+      },
+      "explain": "Now greet.sh has the x permission, so you can start it like a real program with ./greet.sh",
+      "solution": "chmod 755 greet.sh"
+    },
+    {
+      "instruction": "Run your script and give it your name, for example ./greet.sh Ank",
+      "hints": [
+        "Write your name after the script name, with a space in between.",
+        "Type: ./greet.sh Ank"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^\\./greet\\.sh\\s+\\S+"
+          },
+          {
+            "type": "output_contains",
+            "text": "Hello, "
+          }
+        ]
+      },
+      "explain": "The word after the script name became $1. If you add more words, the second one is $2, the third is $3, and so on. Try ./greet.sh world too!",
+      "solution": "./greet.sh Ank"
+    },
+    {
+      "instruction": "Time for a loop! Create a script list.sh that prints 'Text file: ' and the name of every .txt file. Then run it with sh list.sh",
+      "hints": [
+        "A loop looks like this: for f in *.txt; do echo \"Text file: $f\"; done   Save that line into list.sh with echo and single quotes.",
+        "Type: echo 'for f in *.txt; do echo \"Text file: $f\"; done' > list.sh   and then: sh list.sh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_contains",
+            "path": "list.sh",
+            "text": "for "
+          },
+          {
+            "type": "output_contains",
+            "text": "Text file: notes.txt"
+          }
+        ]
+      },
+      "explain": "for repeats a command once for each item. *.txt became notes.txt and todo.txt, and f took each name in turn. The jpg files were left out. Also notice: sh list.sh runs a script even without the x permission.",
+      "solution": "echo 'for f in *.txt; do echo \"Text file: $f\"; done' > list.sh\nsh list.sh"
+    },
+    {
+      "instruction": "Make greet.sh smarter: add a line that prints 'Today is ' and the day of the week. Use $(date +%A) for the day. Then run ./greet.sh with your name again.",
+      "hints": [
+        "$(command) puts the output of a command inside your text. date +%A prints the weekday, like Monday. Single quotes on the outside again!",
+        "Type: echo 'echo \"Today is $(date +%A)\"' >> greet.sh   and then: ./greet.sh Ank"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "file_contains",
+            "path": "greet.sh",
+            "text": "date"
+          },
+          {
+            "type": "output_contains",
+            "text": "Today is "
+          }
+        ]
+      },
+      "explain": "$(...) is called command substitution: the shell runs the command inside and pastes its output into the text. Your script asks the computer for the day every time it runs. That's the magic of scripts: commands saved in a file, ready whenever you need them.",
+      "solution": "echo 'echo \"Today is $(date +%A)\"' >> greet.sh\n./greet.sh Ank"
+    }
+  ]
+}
