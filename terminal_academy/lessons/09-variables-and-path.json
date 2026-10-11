@@ -1,0 +1,142 @@
+{
+  "format_version": 1,
+  "id": "09-variables-and-path",
+  "title": "Variables and PATH",
+  "level": 3,
+  "minutes": 8,
+  "summary": "Use environment variables like HOME, make your own with export, and add your own commands to PATH.",
+  "intro": "Your shell carries a backpack full of little notes called variables.\nEach note has a name and some text, like HOME or PATH.\nIn this lesson you will read these notes, write your own, and use PATH to turn a script into a real command.",
+  "outro": "Awesome! You know how variables work, what PATH does, and how to add your own commands. Real developers do exactly this to 'install' tools for themselves.",
+  "setup": [
+    {
+      "path": "bin/hello",
+      "content": "#!/bin/sh\necho \"Hi! You just ran your own command.\"\n",
+      "mode": "755"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Print the value of the variable HOME.",
+      "hints": [
+        "Put a $ in front of a variable name to get what is inside it. echo prints it.",
+        "Type: echo $HOME"
+      ],
+      "check": {
+        "type": "command_matches",
+        "pattern": "^echo\\s+\"?\\$\\{?HOME"
+      },
+      "explain": "A variable is a named box with text inside. $HOME means 'what is in the box called HOME'. HOME is your home folder; in Terminal Academy it is your sandbox.",
+      "solution": "echo $HOME"
+    },
+    {
+      "instruction": "Show ALL the environment variables at once.",
+      "hints": [
+        "The command is short for 'environment'.",
+        "Type: env"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^(env|printenv)\\b"
+          },
+          {
+            "type": "output_contains",
+            "text": "PATH="
+          }
+        ]
+      },
+      "explain": "Each line is NAME=value. Every program you start gets its own copy of these variables. Can you spot HOME and PATH in the list?",
+      "solution": "env"
+    },
+    {
+      "instruction": "Make your own variable! Create PET with the value dragon, then use it to print: My pet is a dragon",
+      "hints": [
+        "First: export PET=dragon   (no spaces around the = sign!)",
+        "Then type: echo \"My pet is a $PET\""
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "\\$\\{?PET"
+          },
+          {
+            "type": "output_contains",
+            "text": "My pet is a dragon"
+          }
+        ]
+      },
+      "explain": "export makes the variable visible to programs you start. In Terminal Academy, always use export so the app remembers your variable for the next command. Try export PET=unicorn and print it again!",
+      "solution": "export PET=dragon\necho \"My pet is a $PET\""
+    },
+    {
+      "instruction": "Now print the most important variable of all: PATH.",
+      "hints": [
+        "Same as with HOME, but with PATH.",
+        "Type: echo $PATH"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "PATH"
+          },
+          {
+            "type": "output_contains",
+            "text": "/bin"
+          }
+        ]
+      },
+      "explain": "PATH is a list of folders, split by : (colons). When you type ls, the shell looks for a program called ls in these folders, one after another, and runs the first one it finds.",
+      "solution": "echo $PATH"
+    },
+    {
+      "instruction": "Where does the program ls actually live? Ask the computer.",
+      "hints": [
+        "Ask it just like in English: which ls?",
+        "Type: which ls   (if which is missing, try: command -v ls)"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^(which|type|command\\s+-v)\\s+ls\\s*$"
+          },
+          {
+            "type": "output_contains",
+            "text": "/ls"
+          }
+        ]
+      },
+      "explain": "Commands are just program files in folders like /bin or /usr/bin. Those folders are in your PATH, and that's why you can type ls instead of /bin/ls.",
+      "solution": "which ls"
+    },
+    {
+      "instruction": "There is a little program in your bin folder called hello. Type hello: it fails, because bin is not in PATH. Then add $HOME/bin to the FRONT of PATH and type hello again.",
+      "hints": [
+        "The new PATH is: your folder, then a colon, then the old PATH. Like this: export PATH=\"$HOME/bin:$PATH\"",
+        "Type: export PATH=\"$HOME/bin:$PATH\"   and then: hello"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^hello\\s*$"
+          },
+          {
+            "type": "output_contains",
+            "text": "Hi! You just ran your own command."
+          }
+        ]
+      },
+      "explain": "Now the shell finds hello in your bin folder, so it works like any other command. This is how tools get 'installed' just for you. If you ever break PATH by mistake (and suddenly ls is 'not found'), type reset to start fresh.",
+      "solution": "export PATH=\"$HOME/bin:$PATH\"\nhello"
+    }
+  ]
+}

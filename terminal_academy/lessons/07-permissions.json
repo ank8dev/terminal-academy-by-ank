@@ -1,0 +1,119 @@
+{
+  "format_version": 1,
+  "id": "07-permissions",
+  "title": "Who Can Do What?",
+  "level": 3,
+  "minutes": 7,
+  "summary": "Read permissions with ls -l, change them with chmod and run a script with ./ (dot slash).",
+  "intro": "Every file has a little lock with three keys: read, write and run.\nThe computer checks these keys before it lets anyone open, change or start a file.\nIn this lesson you will read the locks, make your diary private, and turn a plain text file into a program you can run.",
+  "outro": "Now you know who can do what! ls -l shows the locks, chmod changes them, and ./ runs a program from the folder you are in. Remember: 600 for secrets, 644 for normal files, 755 for scripts. And never 777.",
+  "setup": [
+    {
+      "path": "diary.txt",
+      "content": "My secret thoughts.\n",
+      "mode": "644"
+    },
+    {
+      "path": "hello.sh",
+      "content": "#!/bin/sh\necho \"Hello from a script!\"\n",
+      "mode": "644"
+    }
+  ],
+  "steps": [
+    {
+      "instruction": "Show the files in this folder in the long format, so you can see their permissions.",
+      "hints": [
+        "Use ls with the option -l. The l means 'long'.",
+        "Type: ls -l"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^ls\\s+(.*\\s)?-[a-zA-Z]*l"
+          },
+          {
+            "type": "output_contains",
+            "text": "rw-r--r--"
+          }
+        ]
+      },
+      "explain": "Look at the start of each line: -rw-r--r--. The first - means 'a normal file' (d would mean a folder). Then come three groups of three letters: the owner (you), the group, and everybody else. r = read, w = write, x = execute (run), and - = not allowed.",
+      "solution": "ls -l"
+    },
+    {
+      "instruction": "Right now everybody can read your diary. Oops! Make diary.txt private: only you can read and write it. Set its mode to 600.",
+      "hints": [
+        "chmod changes the mode. Numbers: r = 4, w = 2, x = 1. Add them up: 6 = 4 + 2 = read + write. 0 = nothing at all.",
+        "Type: chmod 600 diary.txt"
+      ],
+      "check": {
+        "type": "file_mode",
+        "path": "diary.txt",
+        "mode": "600"
+      },
+      "explain": "The three digits are for owner, group and others. 600 means rw------- : you can read and write, nobody else can do anything. Run ls -l again if you want to see the change.",
+      "solution": "chmod 600 diary.txt"
+    },
+    {
+      "instruction": "hello.sh is a tiny script. Try to run it with ./hello.sh (it will fail, and that's the point!)",
+      "hints": [
+        "./ means 'the file right here in this folder'.",
+        "Type: ./hello.sh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^\\./hello\\.sh\\s*$"
+          },
+          {
+            "type": "output_contains",
+            "text": "Permission denied",
+            "stream": "stderr"
+          }
+        ]
+      },
+      "explain": "Permission denied! hello.sh has no x (execute) permission, so the computer refuses to run it. This protects you: a file can't start just because it is there.",
+      "solution": "./hello.sh"
+    },
+    {
+      "instruction": "Make hello.sh runnable: give it the mode 755.",
+      "hints": [
+        "7 = 4 + 2 + 1 = read + write + execute. 5 = 4 + 1 = read + execute.",
+        "Type: chmod 755 hello.sh"
+      ],
+      "check": {
+        "type": "file_mode",
+        "path": "hello.sh",
+        "mode": "755"
+      },
+      "explain": "755 means rwxr-xr-x : you can do everything, the others can read and run it, but not change it. This is the normal mode for scripts and programs. You will also see chmod +x hello.sh, which just adds the x.",
+      "solution": "chmod 755 hello.sh"
+    },
+    {
+      "instruction": "Now run ./hello.sh again.",
+      "hints": [
+        "Same command as before. Use the up arrow key to get it back!",
+        "Type: ./hello.sh"
+      ],
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "command_matches",
+            "pattern": "^\\./hello\\.sh"
+          },
+          {
+            "type": "output_contains",
+            "text": "Hello from a script!"
+          }
+        ]
+      },
+      "explain": "You just ran a program from a file! One warning from Ank: never use chmod 777. It lets EVERYONE change your file, and that is how bad things sneak in.",
+      "solution": "./hello.sh"
+    }
+  ]
+}
