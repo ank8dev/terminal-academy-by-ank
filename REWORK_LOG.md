@@ -282,3 +282,23 @@ after a student complains.
 2. Which landing page: v1 (retro), v2 (modern) or v3 (game)?
 3. Please check/rotate access to the server whose IP was in the old
    desktop code (it stays in git history).
+
+### After stage 9 — Honest safety wording and a disclaimer (your request)
+
+**What was done**
+- Lesson 03 said "you can't break anything". That was too strong: commands
+  are real. It now says "your real files are safe from mistakes".
+- The app's welcome screen now says: commands are real, NO WARRANTY, use at
+  your own risk (see LICENSE).
+- README: new **Disclaimer** section (MIT "as is", no liability, no servers,
+  no data collected, advice for parents). The intro no longer promises
+  "no fear of breaking your computer".
+- All three landing pages got the same short disclaimer in the footer.
+
+**Concept to understand — "warranty disclaimer":** the MIT license already
+says the software is given "AS IS" and the authors are not liable for
+damage. Repeating it where users actually look (app, README, website) makes
+it clear to everyone. Important: no text can remove *all* responsibility in
+every country (for example, if you promise something false). That is why
+we also made the texts **honest** — never promise more than the app does.
+This is not legal advice; for full certainty ask a lawyer.

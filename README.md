@@ -10,8 +10,9 @@ lesson gives you small tasks, like "make a folder called projects". You type
 real commands, and the app checks your work, gives hints when you are stuck,
 and explains what you just did.
 
-Everything happens inside a practice folder (the *sandbox*), so you can try
-things without being afraid of breaking your computer.
+Everything happens inside a practice folder (the *sandbox*) that protects
+you from common mistakes. The commands are real, though — see
+[Disclaimer](#disclaimer).
 
 ## Who it is for
 
@@ -187,6 +188,24 @@ table too (`./academy list` shows the same info).
   create are limited to 100 MB each.
 - **No root.** The app refuses to run as root (the admin user), because a
   mistake as root can break the whole computer. Run it as your normal user.
+
+## Disclaimer
+
+Terminal Academy is free software under the [MIT License](LICENSE). It is
+provided **"as is", without warranty of any kind**. The authors and
+contributors are **not liable** for any damage or data loss that comes from
+using it. You use it **at your own risk**.
+
+- The commands you type are **real** and run on **your** computer, as your
+  own user. The sandbox and the blocklist protect you from **accidents**;
+  they are not a security boundary and can be bypassed on purpose.
+- Terminal Academy runs only on your computer. It has **no servers**,
+  **no accounts**, collects **no data** and sends **nothing** over the
+  internet. The authors do not store any information about you.
+- **Parents and teachers:** the app is designed for learners aged 13 and
+  up. We recommend that younger learners use it with an adult nearby, and
+  that everyone keeps a backup of important files (good advice for any
+  computer!).
 
 ## Project layout
 

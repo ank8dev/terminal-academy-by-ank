@@ -193,5 +193,8 @@ class UI:
                    + self.style("  v" + __version__, "dim"))
         self.print("")
         self.say("Hi, I'm Ank, your terminal mentor. You type real commands, "
-                 "I check them. Everything happens in a safe practice folder, "
-                 "so go ahead and experiment.")
+                 "I check them. Everything happens in a practice folder that "
+                 "protects you from accidents, so go ahead and experiment.")
+        self.print(self.style("   Commands are real and run on your computer. Terminal Academy "
+                              "comes with NO WARRANTY; you use it at your own risk "
+                              "(see LICENSE).", "dim"))

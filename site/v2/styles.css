@@ -173,3 +173,5 @@ h3 { margin: 0 0 .4rem; font-size: 1.15rem; }
   .btn, .card { transition: none; }
   .btn:hover, .card:hover { transform: none; }
 }
+
+.disclaimer { margin-top: 1rem; font-size: .85rem; font-weight: 400; opacity: .75; line-height: 1.5; }

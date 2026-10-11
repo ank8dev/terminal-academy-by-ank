@@ -5,7 +5,7 @@
   "level": 1,
   "minutes": 8,
   "summary": "Create, copy, move and delete files and folders.",
-  "intro": "Your sandbox is a little messy.\nIn this lesson you will build folders, make files, copy them, rename them and clean up.\nEverything happens only inside your sandbox, so you can't break anything.",
+  "intro": "Your sandbox is a little messy.\nIn this lesson you will build folders, make files, copy them, rename them and clean up.\nEverything happens inside your sandbox, so your real files are safe from mistakes.",
   "outro": "Great job! You can now organize files like a pro.",
   "setup": [
     {

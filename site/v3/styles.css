@@ -179,3 +179,5 @@ h3 { font-weight: 900; margin: 0 0 .35rem; font-size: 1.2rem; line-height: 1.25;
   .btn, .char { transition: none; }
 }
 .map-note { margin: 2rem 0 0; font-size: .9rem; color: var(--text-soft); text-align: center; }
+
+.disclaimer { margin-top: 1rem; font-size: .85rem; font-weight: 400; opacity: .75; line-height: 1.5; }
