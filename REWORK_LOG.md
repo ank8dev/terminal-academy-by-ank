@@ -331,3 +331,20 @@ app look like one product, even though different people (agents) built them.
   close to, but not exactly, the real one.
 - Level names on the course map ("Getting around", "Working with text"…)
   were invented for the site; the app itself only shows "Level 1…5".
+
+### Finish — release v3.0.0 and the website
+
+**What was done**
+- Version is **3.0.0** (your choice). The old tag `v1.0.0` belongs to an old
+  desktop commit, so we did not reuse it; 3.0.0 also sorts correctly after
+  the old `v2.1.1`.
+- The PR `rework` → `main` was merged, the tag `v3.0.0` was created, and
+  the website is published on GitHub Pages:
+  https://ank8dev.github.io/terminal-academy-by-ank/
+- `HANDOFF.md` now describes a finished project: nothing is required, only
+  optional next steps.
+
+**Concept to understand — semantic versioning:** `MAJOR.MINOR.PATCH`.
+A big, incompatible change (desktop app → command-line app) raises MAJOR:
+2.1.1 → 3.0.0. New features without breaking things raise MINOR (3.1.0),
+small fixes raise PATCH (3.0.1).

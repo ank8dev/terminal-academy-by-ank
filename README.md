@@ -2,6 +2,8 @@
 
 **Learn the terminal by typing real commands, in a safe practice folder.**
 
+Website: https://ank8dev.github.io/terminal-academy-by-ank/
+
 ## What it is
 
 Terminal Academy is a free, open-source app that teaches you how to use the
@@ -242,7 +244,7 @@ see [SECURITY.md](SECURITY.md).
 
 ## Landing page
 
-The `site/` folder has the project's landing page (`site/index.html`), the
+The `site/` folder has the project's landing page (https://ank8dev.github.io/terminal-academy-by-ank/) (`site/index.html`), the
 brand guide (`site/brand/index.html`: logo, colors, fonts, tone of voice) and
 the icons (favicons, app icons, social preview image). Plain HTML and CSS,
 no build step. It is published to GitHub Pages by `.github/workflows/pages.yml`

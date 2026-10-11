@@ -4,7 +4,7 @@ All notable changes to this project are written here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] — 2026-10-11
+## [3.0.0] — 2026-10-11
 
 The big rework: Terminal Academy is now one small command-line app with real,
 hands-on lessons. Details and reasons: `REWORK_LOG.md`.
@@ -56,9 +56,8 @@ hands-on lessons. Details and reasons: `REWORK_LOG.md`.
   fallback to the host shell from the desktop app. The old code is still in
   git history.
 
-## Before 1.0.0
+## Before 3.0.0
 
-Versions up to 2.1.1 were the Tauri desktop app. They are not compatible
-with 1.0.0 and are not maintained. (The version number was reset to 1.0.0
-because the new CLI is a new product. Note: an old git tag `v1.0.0` already
-exists on a desktop commit; see `HANDOFF.md` §6 before tagging.)
+Versions up to 2.1.1 (tags `v1.0.0`…`v2.1.1`, `v2.0.0-desktop`) were the
+Tauri desktop app. They are not compatible with 3.0.0 and are not
+maintained. 3.0.0 is the first version of the new command-line app.

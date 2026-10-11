@@ -1,4 +1,4 @@
-# Handoff — Terminal Academy v1.0.0
+# Handoff — Terminal Academy v3.0.0
 
 This file is the "save point" of the project. Read it first when you come
 back after a break. It tells you what exists, how it works, what was left
@@ -8,13 +8,13 @@ out on purpose, and what to do next.
 
 ## 1. Current state (October 2026)
 
-- **Version:** 1.0.0 (see `terminal_academy/__init__.py` and `CHANGELOG.md`).
+- **Version:** 3.0.0, git tag `v3.0.0` (see `terminal_academy/__init__.py` and `CHANGELOG.md`).
 - **What it is:** a command-line app that teaches teenagers and beginners the
   terminal. 15 hands-on lessons, from `pwd` to SSH keys and a mini project.
 - **Runs on:** macOS and Linux, Python 3.9+, standard library only.
 - **Tests:** 159 `unittest` tests, all green on Linux with Python 3.9 and 3.13
   (about 15–20 s). CI runs them on Ubuntu and macOS for every pull request.
-- **Status:** feature-complete for v1.0.0. **Not yet tried by a real student
+- **Status:** finished and released (v3.0.0). Website: https://ank8dev.github.io/terminal-academy-by-ank/ . **Not yet tried by a real student
   and not yet run on a real Mac** (only in CI) — see "Known problems".
 
 What was removed in the rework (it lives only in git history now): the Tauri
@@ -94,7 +94,7 @@ site/                   landing page + brand guide (site/brand/) + icons (GitHub
 | AI mentor (Gemini etc.) | Privacy of minors, API keys, network. All hints are pre-written and offline. |
 | Windows support | Lessons teach Unix tools; Windows users can use WSL. Not tested there. |
 | Russian / other languages | English first. The old `translation_ru.json` was dropped with the desktop app. Needs an i18n design (see ROADMAP). |
-| pip / Homebrew package | `git clone` + `./academy` is enough for v1.0.0. |
+| pip / Homebrew package | `git clone` + `./academy` is enough for now. |
 | Keeping the desktop app | Security problems and a fake sandbox (see `AUDIT.md` §5). Useful ideas were ported. |
 | `jobs`/`fg` across lines | Each command is a new bash process, so jobs only exist within one line. Explained in lesson 10. |
 
@@ -127,22 +127,14 @@ site/                   landing page + brand guide (site/brand/) + icons (GitHub
 
 ## 6. How to continue (first steps for the next session)
 
-1. **Merge the PR and tag the release.** ⚠️ A tag `v1.0.0` **already exists**
-   on GitHub: it points to an old desktop commit (`7cdcf3f`, the same commit
-   as `v2.0.0-desktop`). Choose one:
-   - **Move the tag** (keeps the name you asked for):
-     `git push origin :refs/tags/v1.0.0 && git tag -d v1.0.0 2>/dev/null;`
-     `git checkout main && git pull && git tag -a v1.0.0 -m "Terminal Academy v1.0.0 (CLI)" && git push origin v1.0.0`
-     (the old desktop commit stays reachable via `v2.0.0-desktop`);
-   - **or use `v3.0.0`** (no tag rewriting; sorts after the old `v2.1.1`
-     tags) — then also change `__version__` and `CHANGELOG.md`.
-   Then check that CI is green on `main` (especially the macOS jobs).
+1. **Check that everything is still green:** CI on `main` (Actions tab) and
+   the website (https://ank8dev.github.io/terminal-academy-by-ank/). Nothing else is required — the project is
+   in a finished state.
 2. **Test with a real person on a real Mac.** Give lessons 1–5 to one teen,
    watch silently, write down every place they get stuck. Fix texts/hints
    first — this is the cheapest, highest-value improvement.
-3. **Publish the landing page:** enable GitHub Pages (Settings → Pages →
-   branch `gh-pages`) after the first deploy. Then set `og:image` in
-   `site/index.html` to a full URL (social sites need it). If a logo SVG in
+3. **Website:** it deploys automatically from `main` (`.github/workflows/pages.yml`
+   → branch `gh-pages`) whenever `site/` changes. If a logo SVG in
    `site/brand/` changes, re-render the PNG/ICO icons (see `site/README.md`).
 4. **Fix the small engine issues** from "Known problems" 5–6 (hide
    `Terminated`, make `clear` safe without a terminal) — each is a small,
