@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terminal Academy · Live Lab Diagram</title>
+<style>
+  /* Colors as tokens, redefined for dark mode. One source of truth. */
+  :root {
+    --bg: #f4f6fb; --panel: #ffffff; --ink: #0b1b3a; --muted: #5a6b8c;
+    --line: #d4dcec; --accent: #1f6feb; --yellow: #e3a008; --pink: #d6336c;
+    --green: #2f9e44; --red: #e03131; --dir: #1f6feb; --hidden: #d6336c;
+    --cwd: #e3a008; --shadow: rgba(11,27,58,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1020; --panel: #121a2e; --ink: #e8edf7; --muted: #8a9ac0;
+      --line: #263251; --accent: #4d8dff; --yellow: #f2c744; --pink: #ff6ea0;
+      --green: #51cf66; --red: #ff6b6b; --dir: #6ea8ff; --hidden: #ff7aa8;
+      --cwd: #f2c744; --shadow: rgba(0,0,0,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 16px; }
+  header { margin-bottom: 12px; }
+  h1 { font-size: 1.1rem; margin: 0; }
+  h1 .num {
+    display: inline-block; background: var(--accent); color: #fff;
+    border-radius: 6px; padding: 0 8px; margin-right: 8px; font-size: .95rem;
+  }
+  .objective { color: var(--muted); margin: 4px 0 0; }
+  .status { font-size: .85rem; color: var(--muted); margin-top: 6px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+         background: var(--muted); margin-right: 5px; vertical-align: middle; }
+  .dot.live { background: var(--green); }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px var(--shadow);
+  }
+  .panel h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;
+              color: var(--muted); margin: 0 0 10px; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  /* filesystem tree */
+  .node { white-space: pre; font-family: ui-monospace, monospace; font-size: .92rem; }
+  .node .name.dir { color: var(--dir); font-weight: 600; }
+  .node .name.hidden { color: var(--hidden); font-weight: 600; }
+  .node.cwd { background: color-mix(in srgb, var(--cwd) 22%, transparent);
+              border-radius: 4px; }
+  .node .tag { color: var(--cwd); font-size: .78rem; margin-left: 8px; }
+  /* commands */
+  .cmd { font-family: ui-monospace, monospace; font-size: .85rem; color: var(--muted); }
+  .cmd:last-child { color: var(--ink); }
+  /* auth attempts */
+  .auth { font-family: ui-monospace, monospace; font-size: .88rem; padding: 2px 0; }
+  .auth .ok { color: var(--green); font-weight: 600; }
+  .auth .bad { color: var(--red); }
+  .solved {
+    background: var(--green); color: #fff; padding: 10px 14px; border-radius: 10px;
+    font-weight: 600; margin-bottom: 14px;
+  }
+  .legend { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+  .legend b.dir { color: var(--dir); } .legend b.hid { color: var(--hidden); }
+  .legend b.cwd { color: var(--cwd); }
+  text { fill: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="num" id="num">?</span><span id="title">Waiting for the lab…</span></h1>
+    <p class="objective" id="objective"></p>
+    <p class="status"><span class="dot" id="livedot"></span><span id="livetext">connecting…</span>
+       <span id="cwdwrap"> · you are in <code id="cwd">—</code></span></p>
+  </header>
+
+  <div class="solved" id="solved" style="display:none">✓ Flag accepted. Level solved!</div>
+
+  <div class="panel" id="diagrampanel">
+    <h2 id="diagramtitle">Diagram</h2>
+    <div id="diagram"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Recent commands</h2>
+    <div id="commands" class="cmd">—</div>
+  </div>
+</div>
+
+<script>
+// Connect to the server's SSE stream and redraw on every update.
+const $ = (id) => document.getElementById(id);
+
+function connect() {
+  const src = new EventSource("/events");
+  src.onmessage = (ev) => {
+    let state;
+    try { state = JSON.parse(ev.data); } catch (e) { return; }
+    render(state);
+  };
+  src.onopen = () => setLive(true, "live");
+  src.onerror = () => { setLive(false, "reconnecting…"); };
+}
+
+function setLive(live, text) {
+  $("livedot").classList.toggle("live", live);
+  $("livetext").textContent = text;
+}
+
+function render(state) {
+  if (state.error) { $("livetext").textContent = "lab stopped"; return; }
+  const lvl = state.level || {};
+  $("num").textContent = lvl.number != null ? lvl.number : "?";
+  $("title").textContent = lvl.title || "Lab";
+  $("objective").textContent = state.objective || "";
+  setLive(!!state.running, state.running ? "live" : "lab not running");
+  $("cwd").textContent = state.cwd || "—";
+  $("solved").style.display = state.solved ? "block" : "none";
+
+  // recent commands
+  const cmds = state.commands || [];
+  $("commands").innerHTML = cmds.length
+    ? cmds.map((c) => `<div class="cmd">$ ${esc(c)}</div>`).join("")
+    : "— (run a command to see it here)";
+
+  if (state.diagram === "filesystem") renderTree(state);
+  else if (state.diagram === "permissions") renderPerms(state);
+  else if (state.diagram === "network") renderNetwork(state);
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+// ----- filesystem tree -----------------------------------------------------
+function renderTree(state) {
+  $("diagramtitle").textContent = "Filesystem — hidden files in red";
+  const rows = state.tree || [];
+  const html = rows.map((n) => {
+    const indent = "  ".repeat(n.depth);
+    const cls = n.is_dir ? "dir" : (n.hidden ? "hidden" : "");
+    const slash = n.is_dir ? "/" : "";
+    const tag = n.is_cwd ? '<span class="tag">◄ you are here</span>' : "";
+    return `<div class="node ${n.is_cwd ? "cwd" : ""}">${indent}`
+      + `<span class="name ${cls}">${esc(n.name)}${slash}</span>${tag}</div>`;
+  }).join("");
+  $("diagram").innerHTML = html
+    + `<p class="legend"><b class="dir">folder/</b> &nbsp; `
+    + `<b class="hid">.hidden</b> &nbsp; <b class="cwd">highlight = current folder</b></p>`;
+}
+
+// ----- permission bits -----------------------------------------------------
+function renderPerms(state) {
+  $("diagramtitle").textContent = "Permissions — read / write / execute";
+  const files = state.files || [];
+  const cellW = 34, rowH = 64, left = 150, top = 40;
+  const groups = ["owner", "group", "others"];
+  let svg = `<svg viewBox="0 0 ${left + cellW*9 + 20} ${top + files.length*rowH + 20}"
+                  width="100%" role="img">`;
+  // header for the 3 groups × rwx
+  groups.forEach((g, gi) => {
+    const x = left + gi*3*cellW + cellW*1.5;
+    svg += `<text x="${x}" y="24" text-anchor="middle" font-size="13"
+                  fill="var(--muted)">${g}</text>`;
+  });
+  files.forEach((f, ri) => {
+    const y = top + ri*rowH;
+    svg += `<text x="10" y="${y+28}" font-size="14" font-family="monospace">`
+         + `${esc(f.name)}</text>`;
+    if (!f.exists) {
+      svg += `<text x="${left}" y="${y+28}" font-size="13" fill="var(--muted)">missing</text>`;
+      return;
+    }
+    svg += `<text x="10" y="${y+46}" font-size="11" fill="var(--muted)">`
+         + `${esc(f.owner)} · ${esc(f.perm)}</text>`;
+    // bits string like "-rw-r--r--": skip the first (type) char, take 9.
+    const bits = (f.bits || "---------").slice(1).padEnd(9, "-");
+    for (let i = 0; i < 9; i++) {
+      const on = bits[i] !== "-";
+      const label = bits[i] === "-" ? "·" : bits[i];
+      const x = left + i*cellW;
+      const fill = on ? "var(--green)" : "transparent";
+      const stroke = on ? "var(--green)" : "var(--line)";
+      svg += `<rect x="${x}" y="${y+10}" width="${cellW-6}" height="${cellW-6}"
+                    rx="6" fill="${fill}" stroke="${stroke}"/>`;
+      svg += `<text x="${x+(cellW-6)/2}" y="${y+10+(cellW-6)/2+5}" text-anchor="middle"
+                    font-size="14" font-family="monospace"
+                    fill="${on ? "#fff" : "var(--muted)"}">${label}</text>`;
+    }
+  });
+  svg += `</svg>`;
+  $("diagram").innerHTML = svg
+    + `<p class="legend">Each file shows 9 switches: read/write/execute for `
+    + `owner, group and others. A filled green box means "allowed".</p>`;
+}
+
+// ----- network: TCP handshake + auth attempts ------------------------------
+function renderNetwork(state) {
+  $("diagramtitle").textContent = "Network — TCP handshake and login tries";
+  const stage = state.handshake || "none";
+  const order = { none: 0, syn: 1, "syn-ack": 2, established: 3 };
+  const reached = order[stage] || 0;
+  const px = 90, tx = 520, ytop = 70, gap = 46;
+  const arrows = [
+    { label: "SYN", from: px, to: tx, y: ytop, need: 1 },
+    { label: "SYN-ACK", from: tx, to: px, y: ytop + gap, need: 2 },
+    { label: "ACK", from: px, to: tx, y: ytop + 2*gap, need: 3 },
+  ];
+  let svg = `<svg viewBox="0 0 640 ${ytop + 3*gap + 20}" width="100%" role="img">`;
+  // two hosts
+  svg += hostBox(px - 55, 20, "player");
+  svg += hostBox(tx - 35, 20, "target :" + (state.port || 22));
+  // life lines
+  svg += line(px, 44, px, ytop + 2*gap + 10, "var(--line)");
+  svg += line(tx, 44, tx, ytop + 2*gap + 10, "var(--line)");
+  // handshake arrows, lit when reached
+  arrows.forEach((a) => {
+    const on = reached >= a.need;
+    const color = on ? "var(--accent)" : "var(--line)";
+    svg += arrow(a.from, a.to, a.y, color);
+    const mid = (a.from + a.to) / 2;
+    svg += `<text x="${mid}" y="${a.y - 6}" text-anchor="middle" font-size="12"
+                  fill="${on ? "var(--accent)" : "var(--muted)"}"
+                  font-family="monospace">${a.label}</text>`;
+  });
+  svg += `</svg>`;
+
+  // auth attempts
+  const auth = state.auth || [];
+  let authHtml = auth.length
+    ? auth.map((a, i) =>
+        `<div class="auth"><span class="${a.success ? "ok" : "bad"}">`
+        + `${a.success ? "✓ accepted" : "✗ failed  "}</span> `
+        + `user=${esc(a.user)}${a.source ? " from " + esc(a.source) : ""}</div>`).join("")
+    : '<div class="auth">— no login attempts yet</div>';
+
+  $("diagram").innerHTML = svg
+    + `<h2 style="margin-top:14px">Login attempts (${auth.length})</h2>`
+    + authHtml
+    + `<p class="legend">The handshake lights up as SYN → SYN-ACK → ACK complete. `
+    + `Each password try shows green (accepted) or red (failed).</p>`;
+}
+
+function hostBox(x, y, label) {
+  return `<rect x="${x}" y="${y}" width="90" height="24" rx="6"
+               fill="var(--panel)" stroke="var(--accent)"/>`
+       + `<text x="${x+45}" y="${y+16}" text-anchor="middle" font-size="12"
+               font-family="monospace">${esc(label)}</text>`;
+}
+function line(x1, y1, x2, y2, color) {
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}"
+                stroke-dasharray="3 4"/>`;
+}
+function arrow(x1, x2, y, color) {
+  const dir = x2 > x1 ? -6 : 6;
+  return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="2"/>`
+       + `<polyline points="${x2 + dir},${y-4} ${x2},${y} ${x2 + dir},${y+4}"
+                   fill="none" stroke="${color}" stroke-width="2"/>`;
+}
+
+connect();
+</script>
+</body>
+</html>
