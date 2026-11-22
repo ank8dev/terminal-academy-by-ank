@@ -1,0 +1,22 @@
+# Level 2 player container. The flag is placed at run time in two spots:
+#   - /home/player/vault/flag.txt      owned by root, mode 600 (you can't read)
+#   - /var/tmp/backups/flag.txt.bak    owned by root, mode 644 (anyone can read)
+# This Dockerfile just prepares the folders and a few decoys.
+FROM debian:bookworm-slim
+
+RUN useradd --create-home --shell /bin/bash player
+
+RUN set -eux; \
+    mkdir -p /home/player/vault /var/tmp/backups /home/player/work; \
+    # The vault folder belongs to the player, but the file inside will be
+    # root-only, so entering the folder works yet reading the file does not.
+    chown player:player /home/player/vault /home/player/work; \
+    echo "project plan, nothing secret" > /home/player/work/plan.txt; \
+    echo "weekly backup job output" > /var/tmp/backups/README.txt; \
+    chown player:player /home/player/work/plan.txt; \
+    chmod 755 /var/tmp/backups
+
+USER player
+WORKDIR /home/player
+
+CMD ["sleep", "infinity"]

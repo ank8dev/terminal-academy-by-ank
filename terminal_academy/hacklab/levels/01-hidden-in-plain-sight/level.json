@@ -1,0 +1,24 @@
+{
+  "format_version": 1,
+  "id": "01-hidden-in-plain-sight",
+  "title": "Hidden in Plain Sight",
+  "number": 1,
+  "summary": "A secret is hidden in a dotfile. Learn how 'hidden' files really work and find the flag.",
+  "story": "You just got access to an old practice machine. The last person left a secret here, but you cannot see it with a normal 'ls'. On Unix, any file whose name starts with a dot is 'hidden' from normal listings. That is not security: it is just a quiet convention. Your job is to look where most people never look.",
+  "objective": "Find the hidden flag file somewhere under your home folder and submit its contents.",
+  "diagram": "filesystem",
+  "hints": [
+    "A normal 'ls' hides names that start with a dot. Try 'ls -a' to see them.",
+    "Hidden folders can hold more hidden folders. 'ls -a' in each one, or let 'find' do the walking: find . -name '.*'.",
+    "The fastest way: search every file for the word FLAG. Try: grep -r FLAG . 2>/dev/null"
+  ],
+  "containers": [
+    {"name": "player", "role": "player", "dockerfile": "Dockerfile.player"}
+  ],
+  "flag_placements": [
+    {"container": "player", "path": "/home/player/.config/.vault/.secret", "mode": "644", "owner": "player"}
+  ],
+  "diagram_watch": {
+    "root": "/home/player"
+  }
+}

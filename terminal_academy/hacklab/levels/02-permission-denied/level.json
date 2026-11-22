@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "id": "02-permission-denied",
+  "title": "Permission Denied",
+  "number": 2,
+  "summary": "The flag file is locked tight. But someone made a careless backup copy. Read the permission bits to find it.",
+  "story": "There is a flag on this machine, kept in a vault file that only the root user can read. You are not root, so reading it head-on gives 'Permission denied'. But people are messy: backups get made, copied to odd places, and left with the wrong permissions. Somewhere on this box is a copy of that flag that anyone can read. Find it by reading the rwx bits.",
+  "objective": "The vault copy is unreadable to you. Find a world-readable backup of the flag and submit it.",
+  "diagram": "permissions",
+  "hints": [
+    "Try to read the vault first so you see the lock: cat /home/player/vault/flag.txt . 'Permission denied' tells you the bits block you.",
+    "'ls -l' shows permissions as rwx for owner, group and others. Compare the vault file with files you CAN read.",
+    "Search the real folders for a flag file that others can read (skip the system folders like /sys and /proc): find /home /var /tmp /opt /etc -name 'flag*' -perm -o=r 2>/dev/null"
+  ],
+  "containers": [
+    {"name": "player", "role": "player", "dockerfile": "Dockerfile.player"}
+  ],
+  "flag_placements": [
+    {"container": "player", "path": "/home/player/vault/flag.txt", "mode": "600", "owner": "root"},
+    {"container": "player", "path": "/var/tmp/backups/flag.txt.bak", "mode": "644", "owner": "root"}
+  ],
+  "diagram_watch": {
+    "paths": [
+      "/home/player/vault/flag.txt",
+      "/var/tmp/backups/flag.txt.bak"
+    ]
+  }
+}
