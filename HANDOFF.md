@@ -6,14 +6,21 @@ out on purpose, and what to do next.
 
 ---
 
-## 1. Current state (October 2026)
+## 1. Current state (November 2026)
 
-- **Version:** 3.0.0, git tag `v3.0.0` (see `terminal_academy/__init__.py` and `CHANGELOG.md`).
+- **Version:** 3.1.0 (see `terminal_academy/__init__.py` and `CHANGELOG.md`).
+  v3.0.0 is the last tag; v3.1.0 adds Part 2.
 - **What it is:** a command-line app that teaches teenagers and beginners the
-  terminal. 15 hands-on lessons, from `pwd` to SSH keys and a mini project.
-- **Runs on:** macOS and Linux, Python 3.9+, standard library only.
-- **Tests:** 159 `unittest` tests, all green on Linux with Python 3.9 and 3.13
-  (about 15–20 s). CI runs them on Ubuntu and macOS for every pull request.
+  terminal. **Part 1:** 15 hands-on lessons, from `pwd` to SSH keys and a mini
+  project (standard library only, no Docker). **Part 2:** optional Docker-based
+  ethical-hacking "capture the flag" levels with a live browser diagram
+  (`academy hack ...`).
+- **Runs on:** macOS and Linux, Python 3.9+, standard library only. Part 2 also
+  needs Docker (Colima on macOS 12).
+- **Tests:** 225 `unittest` tests, all green on Linux with Python 3.13 (about
+  25 s). The Part 2 tests that need Docker are the end-to-end solves, which are
+  **not** in the `unittest` suite (see §5); the suite itself needs no Docker.
+  CI runs the suite on Ubuntu and macOS for every pull request.
 - **Status:** finished and released (v3.0.0). Website: https://ank8dev.github.io/terminal-academy-by-ank/ . **Not yet tried by a real student
   and not yet run on a real Mac** (only in CI) — see "Known problems".
 
@@ -86,6 +93,41 @@ site/                   landing page + brand guide (site/brand/) + icons (GitHub
 **Lesson format:** documented in `LESSONS_PLAN.md` §2. The validator in
 `lessons.py` is the strict version of that spec.
 
+### Part 2 (ethical hacking) — `terminal_academy/hacklab/`
+
+```
+hacklab/
+  docker_lab.py     thin wrapper over the `docker` CLI (build/run/exec/cp/...)
+  flags.py          random FLAG{...}, SHA-256, host keeps only the hash
+  events.py         pure parsers: shell hook, tcpdump, sshd auth log
+  levels.py         load + validate level.json (like lessons.py for Part 1)
+  session.py        the orchestrator: build images, start containers on an
+                    --internal network, place the flag, feed the diagram
+  diagram_server.py stdlib HTTP + Server-Sent Events
+  diagram.html      one page, SVG diagrams, updates over SSE
+  rc.sh             the shell hook mounted into the player container
+  cli.py            the `academy hack ...` subcommands
+  levels/<id>/      level.json + Dockerfile.* + LEARN.md
+```
+
+**Reuse of Part 1:** the `UI`, the `Progress` file (new keys per level), and the
+hint-first style are shared. The flag check plays the role of a Part 1 "check".
+The lesson-loader pattern (strict validator, self-testing) is mirrored in
+`levels.py`.
+
+**Flow of a level:** `session.start()` builds images, creates an internal
+network, runs each container with `/lab` bind-mounted (hook + event files),
+generates a flag and `docker cp`s it into the container, and (network levels)
+starts `tcpdump` on the target. `session.snapshot()` builds the diagram state
+(reading the event files and, for filesystem/permission views, a fresh
+`docker exec` snapshot). `diagram_server` polls `snapshot()` and pushes JSON to
+the page over SSE.
+
+**Build network note:** a build/run env var `TERMINAL_ACADEMY_BUILD_NETWORK`
+(e.g. `host`) lets the Docker build reach the package mirror through the host's
+network. Normal users leave it unset; it exists for sandboxes behind an HTTPS
+proxy (such as the cloud CI box this was built in).
+
 ## 4. Consciously NOT done (and why)
 
 | Not done | Why |
@@ -100,6 +142,15 @@ site/                   landing page + brand guide (site/brand/) + icons (GitHub
 
 ## 5. Known problems
 
+0. **Part 2 tested on Linux + Docker only.** All three levels were built and
+   solved end to end in containers on Linux (Docker Engine 29), and the live
+   diagram was confirmed reacting over SSE. **Not** yet run on macOS/Colima, and
+   the end-to-end container solves are **not** part of the `unittest` suite
+   (they need a Docker daemon and take minutes). The suite covers the pure
+   logic (flags, event parsing, level loading/validation, the diagram server,
+   the `hack` CLI) without Docker. The `docker exec` snapshot for the
+   filesystem/permission diagrams uses GNU `find -printf` and `stat -c`, which
+   is correct inside the Debian containers regardless of the host OS.
 1. **Never run on a real Mac by a human.** CI covers macOS (incl. Apple's
    Python 3.9 and bash 3.2), but output details (`ps`, `jobs`) may differ.
 2. **CI matrix uses `macos-15-intel`** for Python 3.9. If GitHub renames or
