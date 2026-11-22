@@ -1,0 +1,31 @@
+# Level 3 player container: the "attacker" box. It has a port scanner (nmap),
+# an SSH client, and sshpass (so a script can type the password). It also ships
+# a small wordlist to try against the target.
+FROM debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        nmap openssh-client sshpass ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home --shell /bin/bash player
+
+# A small, honest wordlist: common weak passwords. One of them is the
+# deploy account's real password on the target. Real brute-force lists hold millions
+# of entries; this is a teaching-sized sample.
+RUN printf '%s\n' \
+    letmein \
+    password \
+    123456 \
+    qwerty \
+    dragon \
+    sunshine \
+    football \
+    monkey \
+    > /home/player/wordlist.txt \
+    && chown player:player /home/player/wordlist.txt
+
+USER player
+WORKDIR /home/player
+
+CMD ["sleep", "infinity"]

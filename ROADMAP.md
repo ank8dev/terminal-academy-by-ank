@@ -40,11 +40,26 @@ a list to choose from. "Why" explains the value, so you can decide quickly.
 - **Teacher mode:** export progress as a small report (local file only).
 - **Windows via WSL:** document and test.
 
-## Priority 4 — Big ideas (need serious design)
+## Done since v3.0.0
 
-- **Real isolation:** optional Docker/Podman sandbox for advanced lessons
-  (users, packages, services, firewall) that need root inside a container.
-  Only opt-in; the default must keep working without Docker.
+- **Real isolation (Part 2).** Shipped in v3.1.0: optional Docker-based
+  ethical-hacking levels on an isolated network, with a live browser diagram.
+  Opt-in; Part 1 still works without Docker. Follow-ups below.
+
+## Part 2 follow-ups (ethical hacking)
+
+- **More levels:** SUID binaries and privilege escalation, a vulnerable web app
+  (SQL injection, directory traversal), weak hashes to crack, network sniffing
+  on a shared segment, a simple firewall to get past.
+- **Defender side:** a "blue team" twist where you fix the box after breaking in
+  (turn off password SSH, correct the backup's permissions) and the diagram
+  shows the attack now failing.
+- **Podman support** as a rootless alternative to Docker.
+- **Image caching / prebuilt images** so the first `hack start` is faster.
+- **Harden the lab further:** per-level CPU/memory limits, read-only root
+  filesystems where possible, drop more capabilities.
+
+## Priority 4 — Big ideas (need serious design)
 - **Optional AI hints:** only opt-in, with a clear privacy notice, never
   sending file contents; or a local model. Must be safe for minors.
 - **Server track:** a tiny local "remote" (e.g. an SSH server in a container)

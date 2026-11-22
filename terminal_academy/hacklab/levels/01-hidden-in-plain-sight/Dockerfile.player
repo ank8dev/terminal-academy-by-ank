@@ -1,0 +1,25 @@
+# Level 1 player container: a small Debian box with a home folder full of
+# ordinary-looking files and a few hidden ones. The flag is copied in at run
+# time (see session.py), not baked into this image.
+FROM debian:bookworm-slim
+
+# A normal, non-root user. Security lessons only make sense as a normal user.
+RUN useradd --create-home --shell /bin/bash player
+
+# Some decoy files so the folder looks lived-in, plus nested hidden folders
+# where a secret could hide. We create the folders here; the flag itself is
+# placed at run time.
+RUN set -eux; \
+    mkdir -p /home/player/Documents /home/player/Downloads \
+             /home/player/.config/.vault /home/player/.cache; \
+    echo "shopping, homework, more homework" > /home/player/Documents/todo.txt; \
+    echo "just a cat picture" > /home/player/Downloads/cat.jpg; \
+    echo "nothing to see here" > /home/player/.config/notes.txt; \
+    echo "old logs" > /home/player/.cache/last.log; \
+    chown -R player:player /home/player
+
+USER player
+WORKDIR /home/player
+
+# Keep the container alive so the player can open a shell in it.
+CMD ["sleep", "infinity"]

@@ -1,0 +1,30 @@
+# Level 3 target container: the "victim" server. It runs an SSH server and has
+# a 'deploy' account with a weak password (the whole point of the level).
+# The flag is copied into deploy's home at run time.
+FROM debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        openssh-server tcpdump \
+    && rm -rf /var/lib/apt/lists/*
+
+# The account an attacker will try to break into. Its password is one of the
+# entries in the player's wordlist. This is deliberately weak for the lesson.
+RUN useradd --create-home --shell /bin/bash deploy \
+    && echo 'deploy:sunshine' | chpasswd
+
+# sshd needs a runtime dir and host keys. We authenticate against the local
+# password file (UsePAM no) so password login works in a plain container.
+RUN mkdir -p /run/sshd \
+    && ssh-keygen -A \
+    && printf '%s\n' \
+        'PasswordAuthentication yes' \
+        'UsePAM no' \
+        'PermitRootLogin no' \
+        'PermitEmptyPasswords no' \
+        'LogLevel INFO' \
+        > /etc/ssh/sshd_config.d/lab.conf
+
+# Run sshd in the foreground (-D) and send its log (-e, to stderr) to the file
+# the diagram reads. /lab is bind-mounted when the container starts.
+CMD ["sh", "-c", "mkdir -p /lab/events; exec /usr/sbin/sshd -D -e 2>>/lab/events/auth.log"]

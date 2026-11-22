@@ -12,9 +12,18 @@ lesson gives you small tasks, like "make a folder called projects". You type
 real commands, and the app checks your work, gives hints when you are stuck,
 and explains what you just did.
 
-Everything happens inside a practice folder (the *sandbox*) that protects
-you from common mistakes. The commands are real, though — see
-[Disclaimer](#disclaimer).
+It comes in two parts:
+
+- **Part 1 · Terminal basics** — 15 hands-on lessons, from `pwd` to SSH keys.
+  Everything happens inside a practice folder (the *sandbox*). Python standard
+  library only, no Docker. This is where everyone starts.
+- **Part 2 · Ethical hacking** — Docker-based "capture the flag" levels with a
+  **live diagram** in your browser next to the terminal. You scan, explore and
+  break into throw-away containers that cannot reach the internet or your real
+  network. Needs Docker. See [Part 2](#part-2--ethical-hacking) and the
+  [ethics note](#ethics-practice-only-in-the-lab).
+
+The commands are real, though — see [Disclaimer](#disclaimer).
 
 ## Who it is for
 
@@ -39,11 +48,29 @@ you from common mistakes. The commands are real, though — see
 
 ## Requirements
 
+**Part 1 (terminal basics):**
+
 - **macOS or Linux**
 - **Python 3.9 or newer** (only the standard library — nothing to `pip install`)
 - **bash** (comes with macOS and Linux; the app falls back to `sh` if bash is missing)
 
 Check your Python version with `python3 --version`.
+
+**Part 2 (ethical hacking)** additionally needs **Docker**:
+
+- **Linux:** Docker Engine (`sudo apt install docker.io`, then `sudo systemctl start docker`).
+- **macOS 12 (Monterey) on Intel:** Docker Desktop may be unsupported on older
+  macOS. Use **Colima** instead — it runs the Docker engine in a small Linux VM:
+  ```sh
+  brew install colima docker
+  colima start
+  ```
+  Then the normal `docker` command works. Terminal Academy only needs the
+  `docker` CLI plus a running engine; it never installs or configures Docker
+  for you.
+
+If Docker is missing, Part 1 keeps working, and Part 2 fails with a clear
+message telling you what to install. Part 1 never uses Docker.
 
 ## Install and run
 
@@ -172,6 +199,61 @@ Lessons are JSON files in `terminal_academy/lessons/` (format: see
 [LESSONS_PLAN.md](LESSONS_PLAN.md)). When you add one, add a row to this
 table too (`./academy list` shows the same info).
 
+## Part 2 — Ethical hacking
+
+Part 2 teaches the basics of how attacks work, so you can learn to **defend**.
+Each level is a small "capture the flag" challenge that runs in **Docker
+containers** on an isolated network. You get a real shell inside the lab, and a
+**live diagram** in your browser updates as you work.
+
+```sh
+./academy hack              # list Part 2 levels
+./academy hack start 1      # build, start and play level 1
+./academy hack hint 1       # the next hint for level 1
+./academy hack learn 1      # the concept + how defenders stop it
+./academy hack submit 1 FLAG{...}   # submit a flag you found
+./academy hack stop 1       # stop a level's containers
+```
+
+The first three levels:
+
+| # | Level | You learn | Diagram |
+|---|-------|-----------|---------|
+| 1 | Hidden in Plain Sight | hidden (dot) files | live filesystem tree |
+| 2 | Permission Denied | rwx permission bits, a careless world-readable backup | rwx bits for owner/group/others |
+| 3 | Knock Knock | port scanning (nmap), SSH, a dictionary attack from a small wordlist | live TCP handshake (SYN, SYN-ACK, ACK) and each login attempt |
+
+**How a level works**
+
+1. `academy hack start <n>` builds the level's Debian-slim images (first time
+   only) and starts the containers on an **internal** Docker network that
+   cannot reach the internet or your real machine.
+2. A fresh, **random flag** (`FLAG{...}`) is generated and copied into a
+   container at run time. The host keeps only the flag's **SHA-256 hash** — never
+   the flag itself, never in an environment variable, never in the repo.
+3. You get a shell in the "player" container. A small hook records each command
+   and your current folder to a file the diagram reads.
+4. Open the diagram URL the app prints (a local page at `http://127.0.0.1:PORT/`).
+   It draws the live view with clean SVG and updates over Server-Sent Events.
+5. Find the flag, `exit` the shell, and submit it. Flags are different every run.
+
+**The diagram page** is served by a tiny standard-library web server (no extra
+packages). For network levels, the target container runs `tcpdump` so the page
+can show the TCP handshake live.
+
+Levels live in `terminal_academy/hacklab/levels/<id>/`. Each has a `level.json`
+(story, objective, hints, container spec), one or more `Dockerfile.*`, and a
+`LEARN.md` (the concept, the commands, and how defenders prevent the attack).
+
+### Ethics: practice only in the lab
+
+**Only ever use these techniques inside this lab, or on systems you own or have
+written permission to test.** Scanning, logging into, or attacking a computer
+you do not own is illegal in most countries, even "just to try". The lab
+containers are deliberately cut off from the internet and your network so you
+can experiment safely. Learning how an attack works is how you learn to stop
+it — every level's `LEARN.md` ends with how defenders prevent that attack.
+
 ## Safety notes
 
 - **Sandbox.** Every lesson has its own folder in
@@ -215,7 +297,9 @@ using it. You use it **at your own risk**.
 |------|--------------|
 | `academy` | Launcher script (checks your Python, then starts the app) |
 | `terminal_academy/` | The app: a Python package, standard library only |
-| `terminal_academy/lessons/` | Lessons, one JSON file each |
+| `terminal_academy/lessons/` | Part 1 lessons, one JSON file each |
+| `terminal_academy/hacklab/` | Part 2 (ethical hacking): Docker lab + live diagram |
+| `terminal_academy/hacklab/levels/` | Part 2 levels (`level.json`, Dockerfiles, `LEARN.md`) |
 | `tests/` | Unit tests (`unittest`) |
 | `site/` | Landing page, brand guide, logos and icons |
 | `LESSONS_PLAN.md` | The lesson format and the plan for all lessons |
