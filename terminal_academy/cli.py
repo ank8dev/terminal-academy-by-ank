@@ -213,6 +213,23 @@ def build_parser() -> argparse.ArgumentParser:
     p_reset = sub.add_parser("reset", parents=[common], help="reset progress")
     p_reset.add_argument("lesson", nargs="?", help="only this lesson (default: all)")
     p_reset.add_argument("-y", "--yes", action="store_true", help="do not ask")
+
+    # Part 2: ethical hacking (Docker-based). Its own small set of actions.
+    p_hack = sub.add_parser("hack", parents=[common],
+                            help="Part 2: ethical hacking levels (needs Docker)")
+    hacksub = p_hack.add_subparsers(dest="hack_action")
+    hacksub.add_parser("list", parents=[common], help="list Part 2 levels")
+    for action, helptext in (
+        ("start", "build and play a level"),
+        ("hint", "show the next hint for a level"),
+        ("learn", "show a level's concept and defenses"),
+        ("stop", "stop a level's containers"),
+    ):
+        p = hacksub.add_parser(action, parents=[common], help=helptext)
+        p.add_argument("level", help="level number or id, e.g. 1")
+    p_submit = hacksub.add_parser("submit", parents=[common], help="submit a flag")
+    p_submit.add_argument("level", help="level number or id")
+    p_submit.add_argument("flag", help="the flag you found, e.g. FLAG{...}")
     return parser
 
 
@@ -278,10 +295,20 @@ def main(argv: Optional[List[str]] = None) -> int:
                  "(If you really must, use --allow-root.)")
         return 1
 
+    home = resolve_home(getattr(args, "home", None))
+    reader = make_input(ui)
+
+    # Part 2 (ethical hacking) is handled by its own module. It is the only
+    # command that needs Docker; Part 1 stays standard-library only.
+    if args.command == "hack":
+        from terminal_academy.hacklab import cli as hack_cli
+
+        return hack_cli.run(args, home, ui, input_func=reader)
+
     app = App(
-        resolve_home(getattr(args, "home", None)),
+        home,
         ui,
-        input_func=make_input(ui),
+        input_func=reader,
         timeout=resolve_timeout(getattr(args, "timeout", None)),
     )
     if not app.lessons:
